@@ -1,4 +1,3 @@
-// components/Work.tsx
 import Container from "./Container";
 import { getTranslations } from "next-intl/server";
 import Reveal from "./Reveal";
@@ -24,7 +23,7 @@ export default async function Work({ locale }: { locale: "fi" | "en" }) {
           </div>
         </Reveal>
 
-        {/* 💰 Price calculator instead of project grid */}
+        {/* Price calculator */}
         <Reveal delay={0.1} y={20}>
           <PhotoCalculator />
         </Reveal>

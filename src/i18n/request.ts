@@ -7,7 +7,7 @@ export default getRequestConfig(async ({locale}) => {
   const messages = (await import(`./messages/${l}.json`)).default;
 
   return {
-    locale: l,     // required by your v4.4 types
+    locale: l,
     messages
   };
 });

@@ -4,7 +4,6 @@ import Container from "@/components/Container";
 import Reveal from "@/components/Reveal";
 import { getServicePage, SERVICE_PAGES, ServiceSlug } from "@/lib/servicePages";
 
-// pre-generate static pages: /yrityskuvaus, /haakuvaus, ...
 export async function generateStaticParams() {
   return SERVICE_PAGES.map((service) => ({
     slug: service.slug,

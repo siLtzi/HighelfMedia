@@ -11,7 +11,7 @@ export default async function RootLayout({
   children: ReactNode;
   params: Promise<{ locale: "fi" | "en" }>;
 }) {
-  const { locale } = await params; // ✅ unwrap the Promise
+  const { locale } = await params;
   const messages = (await import(`@/i18n/messages/${locale}.json`)).default;
 
   return (

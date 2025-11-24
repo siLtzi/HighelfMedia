@@ -106,13 +106,12 @@ export default function Hero() {
               break;
           }
 
-          // 👇 z-index so every transition stacks the same way
           const zIndex =
             role === "prev"
-              ? 30 // old slide on top, sliding away
+              ? 30 
               : role === "active"
-              ? 20 // new slide under it
-              : 10; // resting slides at the bottom
+              ? 20 
+              : 10; 
 
           return (
             <div

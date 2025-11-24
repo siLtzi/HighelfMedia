@@ -9,7 +9,6 @@ export default function LocaleSwitcher({ current }: { current: L }) {
   const pathname = usePathname() || '/';
   const other: L = current === 'fi' ? 'en' : 'fi';
 
-  // replace the first segment (/fi or /en) with the other
   const nextHref = pathname.replace(/^\/(fi|en)(?=\/|$)/, `/${other}`);
 
   return (

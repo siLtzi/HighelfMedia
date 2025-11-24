@@ -15,7 +15,6 @@ const SHOOT_TYPES = [
 
 type ShootType = (typeof SHOOT_TYPES)[number];
 
-// 🧮 tweak these numbers to whatever you actually charge
 const PRICING: Record<
   ShootType,
   { base: number; hourly: number; perPhoto: number }
@@ -37,9 +36,8 @@ export default function PhotoCalculator() {
   const [travelKm, setTravelKm] = useState<number>(0);
   const [includeRetouch, setIncludeRetouch] = useState<boolean>(true);
 
-  // tweak these too if you want
   const TRAVEL_PRICE_PER_KM = 0.8; // € / km
-  const RETOUCH_FLAT = 40; // € extra if checked
+  const RETOUCH_FLAT = 40; // € 
 
   const config = PRICING[shootType];
 

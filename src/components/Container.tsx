@@ -3,8 +3,8 @@ import { ReactNode } from 'react';
 export default function Container({
   children,
   className = '',
-  padVW = 10,   // side padding in viewport width
-  clamp = false // set true when you WANT a readable max width for long text
+  padVW = 10,  
+  clamp = false 
 }: {
   children: ReactNode;
   className?: string;
@@ -14,7 +14,7 @@ export default function Container({
   return (
     <div
       className={`mx-auto w-full ${clamp ? 'max-w-6xl' : 'max-w-none'} ${className}`}
-      style={{ paddingInline: `max(${padVW}vw, 1rem)` }} // never smaller than 16px
+      style={{ paddingInline: `max(${padVW}vw, 1rem)` }}
     >
       {children}
     </div>

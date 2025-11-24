@@ -5,7 +5,6 @@ import Container from "./Container";
 import Reveal from "./Reveal";
 import Link from "next/link";
 
-/* === Simple Card (title only) === */
 
 function Card({ title }: { title: string }) {
   return (

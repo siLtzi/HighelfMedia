@@ -16,11 +16,7 @@ export default function AppFrame({ children }: { children: React.ReactNode }) {
     <>
       <SmoothScroll />
 
-      {/* No global background here anymore */}
-
-      <div className="relative z-10">
-        {children}
-      </div>
+      <div className="relative z-10">{children}</div>
     </>
   );
 }

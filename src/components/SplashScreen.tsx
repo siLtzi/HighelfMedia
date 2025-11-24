@@ -7,7 +7,7 @@ type SplashScreenProps = {
   onFinish?: () => void;
   vbWidth?: number;
   vbHeight?: number;
-  durationMs?: number; // total time incl. fade out
+  durationMs?: number; 
 };
 
 export default function SplashScreen({
@@ -19,8 +19,8 @@ export default function SplashScreen({
   const [phase, setPhase] = useState<"in" | "hold" | "out">("in");
 
   useEffect(() => {
-    const t1 = setTimeout(() => setPhase("hold"), 900); // fade-in done sooner
-    const t2 = setTimeout(() => setPhase("out"), 900); // start fade-out sooner
+    const t1 = setTimeout(() => setPhase("hold"), 900); 
+    const t2 = setTimeout(() => setPhase("out"), 900); 
     const t3 = setTimeout(() => onFinish?.(), durationMs);
     return () => {
       clearTimeout(t1);
