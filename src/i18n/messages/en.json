@@ -1,0 +1,91 @@
+{
+  "nav": { "home": "Home", "services": "Services", "work": "Work", "contact": "Contact" },
+  "hero": {
+    "title": "We build fast websites that convert.",
+    "subtitle": "Modern Next.js + Tailwind stack, SEO-ready and measurable.",
+    "ctaPrimary": "Get a quote",
+    "ctaSecondary": "See work",
+    "scroll": "Scroll down"
+  },
+  "services": {
+    "title": "Services",
+    "subtitle": "Something?",
+    "items": {
+      "web": { "title": "Websites", "desc": "Fast, accessible, SEO-optimized sites." },
+      "shop": { "title": "E-commerce", "desc": "Revenue-driving stores (Shopify/Saleor/Stripe)." },
+      "care": { "title": "Care & Support", "desc": "Updates, analytics, and conversion tracking." }
+    }
+  },
+  "work": { "title": "Recent work", "cta": "View more" },
+  "footer": { "copyright": "© {year} Digipaja. All rights reserved." },
+  "cta": { "contact": "Get a quote" },
+  "contact": {
+    "title": "Get in Touch",
+    "desc": "Fill out the form and we'll get back to you soon. You can also email us directly at contact@digipaja.fi.",
+    "name": "Name",
+    "email": "Email",
+    "message": "Message",
+    "submit": "Send"
+  },
+  "estimator": {
+    "title": "Website Estimator",
+    "badges": {
+      "type": "{type}",
+      "pages": "{count} pages",
+      "deadline": "{deadline}"
+    },
+    "fields": {
+      "type": "Type",
+      "pages": "Pages",
+      "features": "Features",
+      "deadline": "Deadline"
+    },
+    "options": {
+      "type": {
+        "business": "Business",
+        "portfolio": "Portfolio",
+        "ecommerce": "E-commerce",
+        "booking": "Booking system",
+        "custom": "Custom"
+      },
+      "features": {
+        "blog": "Blog",
+        "gallery": "Gallery",
+        "contact": "Contact form",
+        "checkout": "Checkout",
+        "booking": "Booking",
+        "multilingual": "Multilingual",
+        "seo": "SEO setup",
+        "cms": "CMS"
+      },
+      "deadline": {
+        "normal": "Normal",
+        "fast": "Fast",
+        "rush": "Rush"
+      }
+    },
+    "helper": {
+      "pagesHint": "First page included, additional pages €40 each",
+      "featuresTip": "Tip: choose only what you truly need — you can always add more later.",
+      "deadlineHint": "Normal = 1x, Fast = 1.2x, Rush = 1.5x"
+    },
+    "breakdown": {
+      "see": "See price breakdown",
+      "base": "Base ({type})",
+      "extraPages": "Extra pages ({count})",
+      "features": "Features {list}",
+      "none": "(none)",
+      "multiplier": "Deadline multiplier"
+    },
+    "total": {
+      "label": "Estimated total",
+      "approxNote": "(approximate — final price depends on project details)"
+    },
+    "cta": "Get a quote"
+  },
+   "about": {
+    "title": "About me",
+    "body": "I’m [name], a photographer based in Oulu. I love natural light, genuine moments, and images that feel as good as they look. I work with weddings, families, portraits and businesses – the most important thing is that the final photos feel like you.",
+    "portraitAlt": "Portrait of photographer [name]"
+  }
+}

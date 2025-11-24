@@ -1,0 +1,135 @@
+{
+  "nav": {
+    "home": "Etusivu",
+    "services": "Palvelut",
+    "work": "Hinnasto",
+    "contact": "Yhteys"
+  },
+
+  "hero": {
+    "scroll": "Vieritä alas"
+  },
+
+  "services": {
+    "title": "Palvelut",
+    "subtitle": "Kuvaan ihmisille tärkeitä hetkiä, tarinoita ja tiloja – luonnollisesti ja laadukkaasti.",
+    "items": {
+      "web": {
+        "title": "Hääkuvaus",
+        "desc": "Tarinalliset, lämpimät ja aidot kuvat tärkeästä päivästäsi."
+      },
+      "shop": {
+        "title": "Muotokuvaus",
+        "desc": "Henkilökuvat, CV-kuvat, some- ja brändikuvat – juuri sinun tyyliisi."
+      },
+      "care": {
+        "title": "Perhekuvaus",
+        "desc": "Luonnolliset ja rennot kuvat perheestä, lapsista tai vastasyntyneestä."
+      }
+    }
+  },
+
+  "work": {
+    "title": "Hinnasto",
+    "subtitle": "Rakenna sinulle sopiva kuvauspaketti — laskuri näyttää lopullisen hinnan ilman piilokuluja.",
+    "cta": "Lue lisää",
+    "viewCase": "Avaa galleria",
+    "items": {
+      "project1": {
+        "title": "Hääkuvaus",
+        "desc": "Tunnelmalliset ja tarinalliset dokumentaariset hääkuvat.",
+        "tags": ["Häät", "Dokumentaarinen"]
+      },
+      "project2": {
+        "title": "Muotokuvaus",
+        "desc": "Luonnolliset ja tyylikkäät muotokuvat sisällä tai ulkona.",
+        "tags": ["Muotokuvat", "Studiovalo"]
+      },
+      "project3": {
+        "title": "Perhekuvaus",
+        "desc": "Rennot ja lämpimät perhekuvat — aitoja hetkiä ja hymyjä.",
+        "tags": ["Perhe", "Lifestyle"]
+      }
+    }
+  },
+
+  "footer": {
+    "copyright": "© {year} Highelf Media. Kaikki oikeudet pidätetään."
+  },
+
+  "cta": { 
+    "contact": "Ota yhteyttä" 
+  },
+
+  "contact": {
+    "title": "Ota yhteyttä",
+    "desc": "Kerro hieman kuvauksesta, jota suunnittelet. Vastaan yleensä saman päivän aikana. Voit myös laittaa sähköpostia: contact@highelfmedia.fi.",
+    "name": "Nimi",
+    "email": "Sähköposti",
+    "message": "Viesti",
+    "submit": "Lähetä"
+  },
+
+  "estimator": {
+    "title": "Kuvauspaketin hinta",
+    "badges": {
+      "type": "{type}",
+      "pages": "{count} kuvaa",
+      "deadline": "{deadline}"
+    },
+    "fields": {
+      "type": "Kuvaustyyppi",
+      "pages": "Kuvien määrä",
+      "features": "Lisäpalvelut",
+      "deadline": "Ajankohta"
+    },
+    "options": {
+      "type": {
+        "business": "Yrityskuvaus",
+        "portfolio": "Muotokuvaus",
+        "ecommerce": "Perhekuvaus",
+        "booking": "Hääkuvaus",
+        "custom": "Muu kuvaus"
+      },
+      "features": {
+        "blog": "Kevyt editointi",
+        "gallery": "Laaja editointi",
+        "contact": "Lisäkuvat",
+        "checkout": "Jälkikäsittelypaketti",
+        "booking": "Pikakäsittely",
+        "multilingual": "Koko gallerian värikorjaus",
+        "seo": "Vedokset",
+        "cms": "Tulosteet / albumi"
+      },
+      "deadline": {
+        "normal": "Normaali aikataulu",
+        "fast": "Nopeutettu",
+        "rush": "Pikatoimitus"
+      }
+    },
+    "helper": {
+      "pagesHint": "Kuvien määrää voi muuttaa tilanteen mukaan.",
+      "featuresTip": "Lisäpalvelut ovat vapaaehtoisia.",
+      "deadlineHint": "Pikatoimituksella kuvat valmiina nopeammin."
+    },
+    "breakdown": {
+      "see": "Näytä erittely",
+      "base": "Perushinta ({type})",
+      "extraPages": "Kuvamäärä ({count})",
+      "features": "Lisäpalvelut {list}",
+      "none": "(ei valittuna)",
+      "multiplier": "Ajankohdan vaikutus"
+    },
+    "total": {
+      "label": "Lopullinen hinta",
+      "approxNote": ""
+    },
+    "cta": "Varaa kuvaus"
+  },
+
+  "about": {
+    "title": "Tietoa minusta",
+    "body": "Olen [nimi], oululainen valokuvaaja. Rakastan luonnollista valoa, aitoja hetkiä ja kuvia, jotka kestävät aikaa. Kuvaan häitä, perheitä, muotokuvia ja yrityksiä — aina asiakkaan tarina edellä.",
+    "portraitAlt": "Valokuvaajan muotokuva"
+  }
+}

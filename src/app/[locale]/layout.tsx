@@ -1,0 +1,24 @@
+import "../globals.css";
+import type { ReactNode } from "react";
+import { NextIntlClientProvider } from "next-intl";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+
+export default async function RootLayout({
+  children,
+  params,
+}: {
+  children: ReactNode;
+  params: Promise<{ locale: "fi" | "en" }>;
+}) {
+  const { locale } = await params; // ✅ unwrap the Promise
+  const messages = (await import(`@/i18n/messages/${locale}.json`)).default;
+
+  return (
+    <NextIntlClientProvider locale={locale} messages={messages}>
+      <Navbar locale={locale} />
+      {children}
+      <Footer locale={locale} />
+    </NextIntlClientProvider>
+  );
+}
