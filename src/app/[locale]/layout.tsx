@@ -9,9 +9,10 @@ export default async function RootLayout({
   params,
 }: {
   children: ReactNode;
-  params: Promise<{ locale: "fi" | "en" }>;
+  params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+
   const messages = (await import(`@/i18n/messages/${locale}.json`)).default;
 
   return (

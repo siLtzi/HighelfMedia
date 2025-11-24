@@ -1,7 +1,7 @@
 import Container from './Container';
 import { getTranslations } from 'next-intl/server';
 
-export default async function Footer({ locale }: { locale: 'fi' | 'en' }) {
+export default async function Footer({ locale }: { locale: string }) {
   const t = await getTranslations({ locale, namespace: 'footer' });
   const year = new Date().getFullYear();
   return (

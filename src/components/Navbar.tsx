@@ -6,7 +6,7 @@ import Container from "./Container";
 import LocaleSwitcher from "./LocaleSwitcher";
 import Image from "next/image";
 
-export default function Navbar({ locale }: { locale: "fi" | "en" }) {
+export default function Navbar({ locale }: { locale: string }) {
   const pathname = usePathname() || "/";
   const base = `/${locale}`;
 
@@ -42,7 +42,7 @@ export default function Navbar({ locale }: { locale: "fi" | "en" }) {
             >
               Contact
             </Link>
-            <LocaleSwitcher current={locale} />
+            <LocaleSwitcher current={locale as any} />
           </div>
         </nav>
       </Container>
