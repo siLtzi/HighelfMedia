@@ -1,6 +1,6 @@
 import "../globals.css";
-import type { ReactNode } from "react";
 import { NextIntlClientProvider } from "next-intl";
+import type { ReactNode } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
