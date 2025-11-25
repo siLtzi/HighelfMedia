@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Container from "./Container";
 import LocaleSwitcher from "./LocaleSwitcher";
-import Image from "next/image";
 
 export default function Navbar({ locale }: { locale: string }) {
   const base = `/${locale}`;
@@ -13,84 +12,59 @@ export default function Navbar({ locale }: { locale: string }) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // Detect scroll
   useEffect(() => {
-    const onScroll = () => {
-      setScrolled(window.scrollY > 80);
-    };
-    onScroll();
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
+    const handler = () => setScrolled(window.scrollY > 80);
+    handler();
+    window.addEventListener("scroll", handler);
+    return () => window.removeEventListener("scroll", handler);
   }, []);
 
-  // Close menu when we scroll back to top
   useEffect(() => {
     if (!scrolled) setMenuOpen(false);
   }, [scrolled]);
 
-  const handleNavClick = () => setMenuOpen(false);
+  const closeMenu = () => setMenuOpen(false);
 
   return (
     <header
       className={`
-        fixed top-0 left-0 z-50 w-full
-        text-zinc-50
-        transition-colors duration-300
+        fixed top-0 left-0 w-full z-50
+        text-zinc-50 transition-all duration-300
         ${
           scrolled
             ? "bg-black/85 border-b border-white/5"
-            : // subtle gradient for readability, no hard bar
-              "bg-gradient-to-b from-black/80 via-black/50 to-transparent"
+            : "bg-gradient-to-b from-black/70 via-black/40 to-transparent"
         }
       `}
     >
       <Container>
         <nav className="relative flex h-16 items-center justify-between">
-          {/* LEFT: hamburger (when scrolled) + logo */}
-          <div className="flex items-center gap-3">
-            {/* Hamburger – only after scrolling, bigger and on the left */}
-            <button
-              type="button"
-              aria-label="Toggle navigation"
-              onClick={() => setMenuOpen((v) => !v)}
-              className={`
-                flex h-11 w-11 items-center justify-center
-                rounded-full border border-white/18
-                bg-black/80 text-white
-                hover:bg-black
-                transition-all duration-300
-                ${
-                  scrolled
-                    ? "opacity-100 scale-100 translate-y-0 pointer-events-auto"
-                    : "opacity-0 scale-75 -translate-y-1 pointer-events-none"
-                }
-              `}
-            >
-              <span className="sr-only">Menu</span>
-              <div className="space-y-1.5">
-                <span className="block h-[3px] w-5 rounded-full bg-current" />
-                <span className="block h-[3px] w-5 rounded-full bg-current" />
-                <span className="block h-[3px] w-5 rounded-full bg-current" />
-              </div>
-            </button>
+          {/* LEFT SIDE — HAMBURGER AFTER SCROLL */}
+          <button
+            onClick={() => setMenuOpen((v) => !v)}
+            aria-label="Menu"
+            className={`
+              flex h-11 w-11 items-center justify-center rounded-full
+              border border-white/20 bg-black/80
+              transition-all duration-300
+              ${
+                scrolled
+                  ? "opacity-100 translate-x-0 scale-100"
+                  : "opacity-0 -translate-x-4 scale-75 pointer-events-none"
+              }
+            `}
+          >
+            <div className="space-y-1.5">
+              <span className="block w-6 h-[3px] bg-white rounded-full"></span>
+              <span className="block w-6 h-[3px] bg-white rounded-full"></span>
+              <span className="block w-6 h-[3px] bg-white rounded-full"></span>
+            </div>
+          </button>
 
-            {/* Logo */}
-            <Link href={base} className="flex items-center gap-2">
-              <Image
-                src="/Highelf.svg"
-                alt="Highelf logo"
-                width={120}
-                height={40}
-                priority
-                className="h-8 w-auto"
-              />
-            </Link>
-          </div>
-
-          {/* FULL NAV (desktop) – fades out when scrolled */}
+          {/* CENTER NAV (Visible at top, hidden on scroll) */}
           <div
             className={`
-              hidden sm:flex items-center gap-6 text-sm
+              hidden sm:flex items-center gap-6 text-sm font-medium
               transition-all duration-300
               ${
                 scrolled
@@ -99,37 +73,25 @@ export default function Navbar({ locale }: { locale: string }) {
               }
             `}
           >
-            <Link
-              href={link("#services")}
-              className="opacity-85 hover:opacity-100"
-              onClick={handleNavClick}
-            >
+            <Link href={link("#services")} className="hover:opacity-100 opacity-80">
               Palvelut
             </Link>
-            <Link
-              href={link("#work")}
-              className="opacity-85 hover:opacity-100"
-              onClick={handleNavClick}
-            >
+            <Link href={link("#work")} className="hover:opacity-100 opacity-80">
               Hinnasto
             </Link>
             <Link
               href={link("#contact")}
-              className="
-                rounded-full bg-zinc-50 px-4 py-2 text-zinc-950 text-sm
-                hover:bg-white transition
-              "
-              onClick={handleNavClick}
+              className="rounded-full bg-white text-black px-4 py-2 hover:bg-opacity-90 transition"
             >
               Ota yhteyttä
             </Link>
             <LocaleSwitcher current={locale as any} />
           </div>
 
-          {/* Compact nav for mobile (top only) */}
+          {/* MOBILE TOP NAV (only when at top) */}
           <div
             className={`
-              flex sm:hidden items-center gap-3 text-xs
+              flex sm:hidden items-center gap-4 text-sm
               transition-all duration-300
               ${
                 scrolled
@@ -138,65 +100,57 @@ export default function Navbar({ locale }: { locale: string }) {
               }
             `}
           >
-            <Link
-              href={link("#services")}
-              className="opacity-85 hover:opacity-100"
-              onClick={handleNavClick}
-            >
+            <Link href={link("#services")} className="opacity-80 hover:opacity-100">
               Palvelut
             </Link>
             <Link
               href={link("#contact")}
-              className="rounded-full bg-zinc-50 px-3 py-1.5 text-[11px] text-zinc-950 hover:bg-white"
-              onClick={handleNavClick}
+              className="rounded-full bg-white text-black px-3 py-1.5"
             >
               Ota yhteyttä
             </Link>
+            <LocaleSwitcher current={locale as any} />
           </div>
 
-          {/* Right side: locale when scrolled (desktop) */}
+          {/* RIGHT SIDE — Locale when scrolled */}
           <div className="hidden sm:flex items-center">
             {scrolled && <LocaleSwitcher current={locale as any} />}
           </div>
 
-          {/* Dropdown menu for hamburger */}
+          {/* DROPDOWN MENU */}
           {menuOpen && scrolled && (
             <div
               className="
-                absolute left-0 top-14
-                w-64 rounded-2xl border border-zinc-800
-                bg-black/95
-                shadow-xl
-                px-4 py-4
-                text-sm
+                absolute left-0 top-16 w-64 rounded-2xl
+                bg-black/95 border border-white/10
+                shadow-xl px-5 py-4
+                text-sm flex flex-col gap-3
               "
             >
-              <div className="flex flex-col gap-2 text-left">
-                <Link
-                  href={link("#services")}
-                  onClick={handleNavClick}
-                  className="py-1.5 opacity-90 hover:opacity-100"
-                >
-                  Palvelut
-                </Link>
-                <Link
-                  href={link("#work")}
-                  onClick={handleNavClick}
-                  className="py-1.5 opacity-90 hover:opacity-100"
-                >
-                  Hinnasto
-                </Link>
-                <Link
-                  href={link("#contact")}
-                  onClick={handleNavClick}
-                  className="py-1.5 opacity-90 hover:opacity-100"
-                >
-                  Ota yhteyttä
-                </Link>
+              <Link
+                href={link("#services")}
+                onClick={closeMenu}
+                className="opacity-80 hover:opacity-100"
+              >
+                Palvelut
+              </Link>
+              <Link
+                href={link("#work")}
+                onClick={closeMenu}
+                className="opacity-80 hover:opacity-100"
+              >
+                Hinnasto
+              </Link>
+              <Link
+                href={link("#contact")}
+                onClick={closeMenu}
+                className="opacity-80 hover:opacity-100"
+              >
+                Ota yhteyttä
+              </Link>
 
-                <div className="mt-3 border-t border-zinc-800 pt-3">
-                  <LocaleSwitcher current={locale as any} />
-                </div>
+              <div className="pt-3 border-t border-white/10">
+                <LocaleSwitcher current={locale as any} />
               </div>
             </div>
           )}
