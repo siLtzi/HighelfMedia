@@ -1,5 +1,10 @@
 {
-  "nav": { "home": "Home", "services": "Services", "work": "Work", "contact": "Contact" },
+  "nav": {
+    "home": "Home",
+    "services": "Services",
+    "work": "Work",
+    "contact": "Contact"
+  },
   "hero": {
     "title": "We build fast websites that convert.",
     "subtitle": "Modern Next.js + Tailwind stack, SEO-ready and measurable.",
@@ -11,19 +16,29 @@
     "title": "Services",
     "subtitle": "Something?",
     "items": {
-      "web": { "title": "Websites", "desc": "Fast, accessible, SEO-optimized sites." },
-      "shop": { "title": "E-commerce", "desc": "Revenue-driving stores (Shopify/Saleor/Stripe)." },
-      "care": { "title": "Care & Support", "desc": "Updates, analytics, and conversion tracking." }
+      "web": {
+        "title": "Websites",
+        "desc": "Fast, accessible, SEO-optimized sites."
+      },
+      "shop": {
+        "title": "E-commerce",
+        "desc": "Revenue-driving stores (Shopify/Saleor/Stripe)."
+      },
+      "care": {
+        "title": "Care & Support",
+        "desc": "Updates, analytics, and conversion tracking."
+      }
     }
   },
   "work": { "title": "Recent work", "cta": "View more" },
   "footer": { "copyright": "© {year} Digipaja. All rights reserved." },
   "cta": { "contact": "Get a quote" },
   "contact": {
-    "title": "Get in Touch",
-    "desc": "Fill out the form and we'll get back to you soon. You can also email us directly at contact@digipaja.fi.",
+    "title": "Get in touch",
+    "desc": "Tell me what kind of photoshoot you’re dreaming of – I’ll get back to you as soon as possible.",
     "name": "Name",
     "email": "Email",
+    "phone": "Phone number",
     "message": "Message",
     "submit": "Send"
   },
@@ -83,7 +98,7 @@
     },
     "cta": "Get a quote"
   },
-   "about": {
+  "about": {
     "title": "About me",
     "body": "I’m [name], a photographer based in Oulu. I love natural light, genuine moments, and images that feel as good as they look. I work with weddings, families, portraits and businesses – the most important thing is that the final photos feel like you.",
     "portraitAlt": "Portrait of photographer [name]"

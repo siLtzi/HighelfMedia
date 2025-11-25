@@ -57,15 +57,16 @@
     "copyright": "© {year} Highelf Media. Kaikki oikeudet pidätetään."
   },
 
-  "cta": { 
-    "contact": "Ota yhteyttä" 
+  "cta": {
+    "contact": "Ota yhteyttä"
   },
 
   "contact": {
     "title": "Ota yhteyttä",
-    "desc": "Kerro hieman kuvauksesta, jota suunnittelet. Vastaan yleensä saman päivän aikana. Voit myös laittaa sähköpostia: contact@highelfmedia.fi.",
+    "desc": "Kerro millaisesta kuvauksesta haaveilet – palaan sinulle mahdollisimman pian.",
     "name": "Nimi",
     "email": "Sähköposti",
+    "phone": "Puhelinnumero",
     "message": "Viesti",
     "submit": "Lähetä"
   },

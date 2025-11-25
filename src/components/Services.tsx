@@ -5,20 +5,65 @@ import Container from "./Container";
 import Reveal from "./Reveal";
 import Link from "next/link";
 
+type CardProps = {
+  title: string;
+  align: "left" | "right";
+  image: string;
+};
 
-function Card({ title }: { title: string }) {
+function Card({ title, align, image }: CardProps) {
+  const isLeft = align === "left";
+
   return (
     <div
       className="
         group relative overflow-hidden rounded-2xl
-        border border-zinc-200/50 dark:border-zinc-800
-        bg-white/60 dark:bg-zinc-900/40 backdrop-blur-xl
-        shadow-sm transition-all
-        hover:-translate-y-0.5 hover:shadow-lg
+        border border-zinc-800
+        bg-zinc-950
+        shadow-sm
+        transition-transform duration-200
+        hover:-translate-y-0.5 hover:scale-[1.02]
       "
     >
-      <div className="relative px-8 py-10 text-left">
-        <h3 className="text-lg font-semibold tracking-tight">{title}</h3>
+      {/* IMAGE BACKGROUND (zooms a bit) */}
+      <div className="pointer-events-none absolute inset-0">
+        <div
+          className="
+            h-full w-full bg-center bg-cover
+            transition-transform duration-300
+            group-hover:scale-100
+          "
+          style={{ backgroundImage: `url(${image})` }}
+        />
+      </div>
+
+      {/* TEXT PANEL WITH DIAGONAL EDGE */}
+      <div className="relative h-24 sm:h-28 flex items-stretch">
+        <div
+          className={`
+            relative h-full
+            w-[240px] sm:w-[280px] lg:w-[320px]   /* 👈 fixed width */
+            ${isLeft ? "ml-0 mr-auto" : "ml-auto mr-0"}
+          `}
+        >
+          <div
+            className={`
+              h-full w-full flex items-center
+              px-6 sm:px-8
+              bg-zinc-950
+              ${isLeft ? "justify-start text-left" : "justify-end text-right"}
+              ${
+                isLeft
+                  ? "[clip-path:polygon(0_0,100%_0,80%_100%,0_100%)]"
+                  : "[clip-path:polygon(20%_0,100%_0,100%_100%,0_100%)]"
+              }
+            `}
+          >
+            <span className="text-base sm:text-lg font-semibold tracking-tight">
+              {title}
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -50,17 +95,38 @@ export default function Services({ locale }: { locale: "fi" | "en" }) {
 
   // title + slug for each service (slug = url)
   const items = [
-    { title: "Yrityskuvaus", slug: "yrityskuvaus" },
-    { title: "Hääkuvaus", slug: "haakuvaus" },
-    { title: "Muotokuvaus", slug: "muotokuvaus" },
-    { title: "Lapsi- ja perhekuvaus", slug: "lapsi-ja-perhekuvaus" },
+    {
+      title: "Yrityskuvaus",
+      slug: "yrityskuvaus",
+      image: "/services/yritys.png",
+    },
+    { title: "Hääkuvaus", slug: "haakuvaus", image: "/services/haat.png" },
+    {
+      title: "Muotokuvaus",
+      slug: "muotokuvaus",
+      image: "/services/muotokuva.png",
+    },
+    {
+      title: "Lapsi- ja perhekuvaus",
+      slug: "lapsi-ja-perhekuvaus",
+      image: "/services/perhe.png",
+    },
     {
       title: "Rippi- ja valmistujaiskuvaus",
       slug: "rippi-ja-valmistujaiskuvaus",
+      image: "/services/rippi.png",
     },
-    { title: "Asuntokuvaus", slug: "asuntokuvaus" },
-    { title: "Hautajaiskuvaus", slug: "hautajaiskuvaus" },
-    { title: "Eläinkuvaus", slug: "elainkuvaus" },
+    {
+      title: "Asuntokuvaus",
+      slug: "asuntokuvaus",
+      image: "/services/asunto.png",
+    },
+    {
+      title: "Hautajaiskuvaus",
+      slug: "hautajaiskuvaus",
+      image: "/services/hautaus.png",
+    },
+    { title: "Eläinkuvaus", slug: "elainkuvaus", image: "/services/elain.png" },
   ];
 
   return (
@@ -96,11 +162,11 @@ export default function Services({ locale }: { locale: "fi" | "en" }) {
               <div
                 key={item.slug}
                 className={`
-                  w-full flex
-                  ${fromLeft ? "justify-start" : "justify-end"}
-                  transition-[transform,opacity] duration-500 ease-out
-                  ${triggered ? shown : hidden}
-                `}
+        w-full flex
+        ${fromLeft ? "justify-start" : "justify-end"}
+        transition-[transform,opacity] duration-500 ease-out
+        ${triggered ? shown : hidden}
+      `}
                 style={{
                   transitionDelay: triggered ? `${i * 120}ms` : "0ms",
                 }}
@@ -108,12 +174,16 @@ export default function Services({ locale }: { locale: "fi" | "en" }) {
                 <Link
                   href={`/${locale}/${item.slug}`}
                   className="
-                    w-[78%] md:w-[70%]
-                    hover:w-full
-                    transition-[width] duration-200 ease-out
-                  "
+    w-[78%] md:w-[70%]
+    hover:w-full
+    transition-[width] duration-200 ease-out
+  "
                 >
-                  <Card title={item.title} />
+                  <Card
+                    title={item.title}
+                    align={fromLeft ? "left" : "right"}
+                    image={item.image}
+                  />
                 </Link>
               </div>
             );

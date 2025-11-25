@@ -31,7 +31,7 @@ export default function About() {
           <Reveal delay={0.1} y={24}>
             <div className="relative mx-auto h-64 w-64 sm:h-72 sm:w-72 lg:h-80 lg:w-80 overflow-hidden rounded-3xl border border-zinc-200/60 dark:border-zinc-800 shadow-lg bg-zinc-900/10">
               <Image
-                src="/about-portrait.jpg"
+                src="/about-portrait.png"
                 alt={t("portraitAlt")}
                 fill
                 className="object-cover"
