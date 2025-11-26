@@ -9,9 +9,10 @@ type CardProps = {
   title: string;
   align: "left" | "right";
   image: string;
+  backgroundPosition?: string; // 👈 NEW
 };
 
-function Card({ title, align, image }: CardProps) {
+function Card({ title, align, image, backgroundPosition }: CardProps) {
   const isLeft = align === "left";
 
   return (
@@ -22,44 +23,63 @@ function Card({ title, align, image }: CardProps) {
         bg-zinc-950
         shadow-sm
         transition-transform duration-200
-        hover:-translate-y-0.5 hover:scale-[1.02]
+        hover:translate-y-0 hover:scale-[1.01]
       "
     >
-      {/* IMAGE BACKGROUND (zooms a bit) */}
+      {/* IMAGE BACKGROUND (shared) */}
       <div className="pointer-events-none absolute inset-0">
         <div
           className="
-            h-full w-full bg-center bg-cover
+            h-full w-full bg-cover
             transition-transform duration-300
             group-hover:scale-100
           "
-          style={{ backgroundImage: `url(${image})` }}
+          style={{
+            backgroundImage: `url(${image})`,
+            backgroundPosition: backgroundPosition ?? "50% 50%",
+          }}
         />
       </div>
 
-      {/* TEXT PANEL WITH DIAGONAL EDGE */}
-      <div className="relative h-24 sm:h-28 flex items-stretch">
+      {/* === MOBILE VERSION (< sm) === */}
+      <div className="relative h-48 flex items-end sm:hidden">
+        <div
+          className={`
+            w-full px-4 py-3
+            bg-gradient-to-t from-black/85 via-black/40 to-transparent
+            text-white
+            ${isLeft ? "text-left" : "text-right"}
+          `}
+        >
+          <span className="text-lg font-semibold tracking-tight drop-shadow-[0_0_6px_rgba(0,0,0,0.9)]">
+            {title}
+          </span>
+        </div>
+      </div>
+
+      {/* === DESKTOP / TABLET VERSION (sm+) === */}
+      <div className="relative hidden sm:flex h-32 lg:h-40 items-stretch">
         <div
           className={`
             relative h-full
-            w-[240px] sm:w-[280px] lg:w-[320px]   /* 👈 fixed width */
             ${isLeft ? "ml-0 mr-auto" : "ml-auto mr-0"}
           `}
         >
           <div
             className={`
-              h-full w-full flex items-center
-              px-6 sm:px-8
+              h-full flex items-center
+              px-4 sm:px-6
               bg-zinc-950
+              w-[280px] sm:w-[340px] lg:w-[400px]
               ${isLeft ? "justify-start text-left" : "justify-end text-right"}
               ${
-                isLeft
-                  ? "[clip-path:polygon(0_0,100%_0,80%_100%,0_100%)]"
-                  : "[clip-path:polygon(20%_0,100%_0,100%_100%,0_100%)]"
-              }
+  isLeft
+    ? "[clip-path:polygon(0_0,100%_0,92%_100%,0_100%)]"
+    : "[clip-path:polygon(8%_0,100%_0,100%_100%,0_100%)]"
+}
             `}
           >
-            <span className="text-base sm:text-lg font-semibold tracking-tight">
+            <span className="text-base sm:text-lg lg:text-3xl tracking-tight drop-shadow-[0_0_6px_rgba(0,0,0,0.8)]">
               {title}
             </span>
           </div>
@@ -99,34 +119,49 @@ export default function Services({ locale }: { locale: "fi" | "en" }) {
       title: "Yrityskuvaus",
       slug: "yrityskuvaus",
       image: "/services/yritys.png",
+      backgroundPosition: "50% 90%",
     },
-    { title: "Hääkuvaus", slug: "haakuvaus", image: "/services/haat.png" },
+    {
+      title: "Hääkuvaus",
+      slug: "haakuvaus",
+      image: "/services/haat.png",
+      backgroundPosition: "50% 20%",
+    },
     {
       title: "Muotokuvaus",
       slug: "muotokuvaus",
       image: "/services/muotokuva.png",
+      backgroundPosition: "50% 30%", // a bit higher
     },
     {
       title: "Lapsi- ja perhekuvaus",
       slug: "lapsi-ja-perhekuvaus",
       image: "/services/perhe.png",
+      backgroundPosition: "50% 22%", // show faces nicely
     },
     {
       title: "Rippi- ja valmistujaiskuvaus",
       slug: "rippi-ja-valmistujaiskuvaus",
       image: "/services/rippi.png",
+      backgroundPosition: "50% 18%", // cap + face
     },
     {
       title: "Asuntokuvaus",
       slug: "asuntokuvaus",
       image: "/services/asunto.png",
+      backgroundPosition: "50% 55%",
     },
     {
       title: "Hautajaiskuvaus",
       slug: "hautajaiskuvaus",
       image: "/services/hautaus.png",
+      backgroundPosition: "50% 57%",
     },
-    { title: "Eläinkuvaus", slug: "elainkuvaus", image: "/services/elain.png" },
+    {
+      title: "Eläinkuvaus",
+      slug: "elainkuvaus",
+      image: "/services/elain.png",
+    },
   ];
 
   return (
@@ -148,7 +183,7 @@ export default function Services({ locale }: { locale: "fi" | "en" }) {
         </Reveal>
 
         {/* Staggered rows */}
-        <div className="mt-16 flex flex-col gap-10 w-full mx-auto pb-8">
+        <div className="mt-16 flex flex-col gap-2 w-full mx-auto pb-8">
           {items.map((item, i) => {
             const fromLeft = i % 2 === 0;
 
@@ -183,6 +218,7 @@ export default function Services({ locale }: { locale: "fi" | "en" }) {
                     title={item.title}
                     align={fromLeft ? "left" : "right"}
                     image={item.image}
+                    backgroundPosition={item.backgroundPosition}
                   />
                 </Link>
               </div>

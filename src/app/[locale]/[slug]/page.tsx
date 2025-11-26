@@ -2,10 +2,34 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Container from "@/components/Container";
 import Reveal from "@/components/Reveal";
-import { getServicePage, SERVICE_PAGES, ServiceSlug } from "@/lib/servicePages";
+import { client } from "@/sanity/lib/client";
+import { allServiceSlugsQuery, serviceBySlugQuery } from "@/sanity/lib/queries";
+import ServicePortfolioGrid from "./ServicePortfolioGrid";
+import PhotoCalculator from "@/components/PhotoCalculator";
+import Contact from "@/components/Contact";
+
+type ServiceSlug = string;
+
+type Service = {
+  slug: string;
+  title: string;
+  tagline?: string;
+  info?: string;
+  pricingIntro?: string;
+  portfolioIntro?: string;
+  howItWorks?: { title?: string; desc?: string }[];
+  faq?: { q?: string; a?: string }[];
+  portfolioImages?: {
+    _key: string;
+    alt?: string;
+    asset?: any;
+  }[];
+};
 
 export async function generateStaticParams() {
-  return SERVICE_PAGES.map((service) => ({
+  const services: { slug: string }[] = await client.fetch(allServiceSlugsQuery);
+
+  return services.map((service) => ({
     slug: service.slug,
   }));
 }
@@ -15,8 +39,11 @@ export async function generateMetadata({
 }: {
   params: { slug: ServiceSlug };
 }): Promise<Metadata> {
-  const service = getServicePage(params.slug);
+  const { slug } = params;
+  const service: Service | null = await client.fetch(serviceBySlugQuery(slug));
+
   if (!service) return {};
+
   return {
     title: `${service.title} – Highelf Media`,
     description: service.tagline,
@@ -28,8 +55,9 @@ export default async function ServicePage({
 }: {
   params: Promise<{ locale: string; slug: ServiceSlug }>;
 }) {
-  const { slug } = await params;
-  const service = getServicePage(slug);
+  const { slug, locale } = await params;
+
+  const service: Service | null = await client.fetch(serviceBySlugQuery(slug));
 
   if (!service) notFound();
 
@@ -43,10 +71,10 @@ export default async function ServicePage({
               Palvelu
             </p>
             <h1 className="mt-2 text-3xl sm:text-4xl font-semibold tracking-tight">
-              {service!.title}
+              {service.title}
             </h1>
             <p className="mt-3 text-sm sm:text-base text-zinc-600 dark:text-zinc-400">
-              {service!.tagline}
+              {service.tagline}
             </p>
           </header>
         </Reveal>
@@ -59,19 +87,19 @@ export default async function ServicePage({
               <section className="rounded-2xl border border-zinc-200/70 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80 backdrop-blur p-6 sm:p-8">
                 <h2 className="text-lg font-semibold">Tietoa kuvauksesta</h2>
                 <p className="mt-3 text-sm text-zinc-600 dark:text-zinc-400">
-                  {service!.info}
+                  {service.info}
                 </p>
               </section>
             </Reveal>
 
             {/* How it works */}
-            {service!.howItWorks?.length > 0 && (
+            {service.howItWorks && service.howItWorks.length > 0 && (
               <Reveal delay={0.08} y={20}>
                 <section className="rounded-2xl border border-zinc-200/70 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80 backdrop-blur p-6 sm:p-8">
                   <h2 className="text-lg font-semibold">Miten kuvaus etenee</h2>
                   <ol className="mt-4 space-y-3 text-sm text-zinc-600 dark:text-zinc-400">
-                    {service!.howItWorks.map((step, index) => (
-                      <li key={step.title} className="flex gap-3">
+                    {service.howItWorks.map((step, index) => (
+                      <li key={step.title ?? index} className="flex gap-3">
                         <span className="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-zinc-900 text-white text-xs dark:bg-zinc-100 dark:text-zinc-900">
                           {index + 1}
                         </span>
@@ -94,7 +122,7 @@ export default async function ServicePage({
             <aside className="rounded-2xl border border-zinc-200/70 dark:border-zinc-800 bg-zinc-50/80 dark:bg-zinc-950/80 backdrop-blur p-6 sm:p-7">
               <h2 className="text-base font-semibold">Hinnoittelu</h2>
               <p className="mt-3 text-sm text-zinc-600 dark:text-zinc-400">
-                {service!.pricingIntro}
+                {service.pricingIntro}
               </p>
 
               <p className="mt-4 text-sm text-zinc-600 dark:text-zinc-400">
@@ -117,12 +145,12 @@ export default async function ServicePage({
                 </a>
               </div>
 
-              {service!.faq?.length > 0 && (
+              {service.faq && service.faq.length > 0 && (
                 <div className="mt-6 border-t border-zinc-200/70 dark:border-zinc-800 pt-4">
                   <h3 className="text-sm font-semibold mb-2">Usein kysyttyä</h3>
                   <dl className="space-y-3 text-xs text-zinc-600 dark:text-zinc-400">
-                    {service!.faq.map((item) => (
-                      <div key={item.q}>
+                    {service.faq.map((item, index) => (
+                      <div key={item.q ?? index}>
                         <dt className="font-medium text-zinc-900 dark:text-zinc-100">
                           {item.q}
                         </dt>
@@ -137,36 +165,27 @@ export default async function ServicePage({
         </div>
       </Container>
 
+      {/* === CALCULATOR FOR THIS SERVICE === */}
+      <div id="work">
+        <Container>
+          <Reveal delay={0.08} y={20}>
+            <PhotoCalculator serviceSlug={service.slug} lockToService />
+          </Reveal>
+        </Container>
+      </div>
+
       {/* === PORTFOLIO ROW (FULL CONTAINER WIDTH) === */}
       <Container>
         <Reveal delay={0.1} y={20}>
-          <section className="mt-20">
-            <div className="text-center mb-8 px-4">
-              <h2 className="text-2xl font-semibold mb-3">Portfolio</h2>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto">
-                {service!.portfolioIntro}
-              </p>
-            </div>
-
-            <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-0">
-              <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
-                {service!.portfolioImages.map((src, i) => (
-                  <div
-                    key={i}
-                    className="relative aspect-[4/3] rounded-xl overflow-hidden bg-zinc-800"
-                  >
-                    <img
-                      src={src}
-                      alt=""
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
+          <ServicePortfolioGrid
+            intro={service.portfolioIntro}
+            images={service.portfolioImages ?? []}
+          />
         </Reveal>
       </Container>
+
+      {/* === CONTACT SECTION (reuse homepage contact) === */}
+      <Contact locale={locale} />
     </section>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import Container from "./Container";
 import Reveal from "./Reveal";
@@ -8,6 +8,15 @@ import Reveal from "./Reveal";
 export default function Contact({ locale }: { locale: string }) {
   const t = useTranslations("contact");
   const [message, setMessage] = useState("");
+  const [calculatorDetails, setCalculatorDetails] = useState("");
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const stored = window.localStorage.getItem("highelf_quote");
+    if (stored) {
+      setCalculatorDetails(stored);
+    }
+  }, []);
 
   return (
     <section
@@ -59,6 +68,17 @@ export default function Contact({ locale }: { locale: string }) {
                 required
               />
 
+              {calculatorDetails && (
+                <div className="rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white/5 dark:bg-zinc-800/40 px-4 py-3 text-xs text-zinc-700 dark:text-zinc-200">
+                  <p className="font-semibold mb-1">
+                    Valinnat hinnastolaskurista
+                  </p>
+                  <pre className="whitespace-pre-wrap leading-relaxed">
+                    {calculatorDetails}
+                  </pre>
+                </div>
+              )}
+
               <textarea
                 rows={5}
                 value={message}
@@ -70,7 +90,7 @@ export default function Contact({ locale }: { locale: string }) {
 
               <button
                 type="submit"
-                className="mt-2 rounded-xl bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 py-3 text-sm font-medium hover:opacity-90 transition"
+                className="mt-2 rounded-xl bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 py-3 text-sm font-medium hover:opacity-90 transition cursor-pointer"
               >
                 {t("submit")}
               </button>

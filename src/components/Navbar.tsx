@@ -7,155 +7,166 @@ import LocaleSwitcher from "./LocaleSwitcher";
 
 export default function Navbar({ locale }: { locale: string }) {
   const base = `/${locale}`;
-  const link = (slug: string) => `${base}${slug}`;
+  const section = (hash: string) => `${base}#${hash}`;
 
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 80);
+    const handler = () => setScrolled(window.scrollY > 40);
     handler();
     window.addEventListener("scroll", handler);
     return () => window.removeEventListener("scroll", handler);
   }, []);
 
-  useEffect(() => {
-    if (!scrolled) setMenuOpen(false);
-  }, [scrolled]);
-
+  // Close mobile menu on route hash clicks
   const closeMenu = () => setMenuOpen(false);
 
   return (
     <header
       className={`
-        fixed top-0 left-0 w-full z-50
-        text-zinc-50 transition-all duration-300
-        ${
-          scrolled
-            ? "bg-black/85 border-b border-white/5"
-            : "bg-gradient-to-b from-black/70 via-black/40 to-transparent"
-        }
+        fixed inset-x-0 top-0 z-50
+        transition-all duration-300
+        ${scrolled ? "bg-black/90 border-b border-white/10" : "bg-gradient-to-b from-black/80 via-black/40 to-transparent border-b border-transparent"}
+        backdrop-blur-md
       `}
     >
       <Container>
-        <nav className="relative flex h-16 items-center justify-between">
-          {/* LEFT SIDE — HAMBURGER AFTER SCROLL */}
-          <button
-            onClick={() => setMenuOpen((v) => !v)}
-            aria-label="Menu"
-            className={`
-              flex h-11 w-11 items-center justify-center rounded-full
-              border border-white/20 bg-black/80
-              transition-all duration-300
-              ${
-                scrolled
-                  ? "opacity-100 translate-x-0 scale-100"
-                  : "opacity-0 -translate-x-4 scale-75 pointer-events-none"
-              }
-            `}
-          >
-            <div className="space-y-1.5">
-              <span className="block w-6 h-[3px] bg-white rounded-full"></span>
-              <span className="block w-6 h-[3px] bg-white rounded-full"></span>
-              <span className="block w-6 h-[3px] bg-white rounded-full"></span>
-            </div>
-          </button>
-
-          {/* CENTER NAV (Visible at top, hidden on scroll) */}
-          <div
-            className={`
-              hidden sm:flex items-center gap-6 text-sm font-medium
-              transition-all duration-300
-              ${
-                scrolled
-                  ? "opacity-0 -translate-y-2 pointer-events-none"
-                  : "opacity-100 translate-y-0"
-              }
-            `}
-          >
-            <Link href={link("#services")} className="hover:opacity-100 opacity-80">
-              Palvelut
+        <nav className="flex h-16 items-center justify-between gap-4">
+          {/* LEFT: LOGO / BRAND */}
+          <div className="flex items-center">
+            <Link href={base} className="inline-flex items-center gap-2">
+              <img
+                src="/Highelf2.svg"
+                alt="Highelf Media"
+                className="h-16 w-auto object-contain"
+              />
             </Link>
-            <Link href={link("#work")} className="hover:opacity-100 opacity-80">
+          </div>
+
+          {/* CENTER: DESKTOP NAV */}
+          <div className="hidden md:flex items-center gap-8 text-sm">
+            <Link
+              href={section("services")}
+              className="relative text-zinc-200/90 hover:text-white transition"
+            >
+              <span>Palvelut</span>
+              <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-white transition-all duration-200 group-hover:w-full" />
+            </Link>
+            <Link
+              href={section("work")}
+              className="text-zinc-200/90 hover:text-white transition"
+            >
               Hinnasto
             </Link>
             <Link
-              href={link("#contact")}
-              className="rounded-full bg-white text-black px-4 py-2 hover:bg-opacity-90 transition"
+              href={section("contact")}
+              className="text-zinc-200/90 hover:text-white transition"
             >
-              Ota yhteyttä
+              Yhteystiedot
             </Link>
-            <LocaleSwitcher current={locale as any} />
           </div>
 
-          {/* MOBILE TOP NAV (only when at top) */}
-          <div
-            className={`
-              flex sm:hidden items-center gap-4 text-sm
-              transition-all duration-300
-              ${
-                scrolled
-                  ? "opacity-0 -translate-y-2 pointer-events-none"
-                  : "opacity-100 translate-y-0"
-              }
-            `}
-          >
-            <Link href={link("#services")} className="opacity-80 hover:opacity-100">
-              Palvelut
-            </Link>
+          {/* RIGHT: DESKTOP CTAs */}
+          <div className="hidden md:flex items-center gap-4">
+            <LocaleSwitcher current={locale as any} />
             <Link
-              href={link("#contact")}
-              className="rounded-full bg-white text-black px-3 py-1.5"
-            >
-              Ota yhteyttä
-            </Link>
-            <LocaleSwitcher current={locale as any} />
-          </div>
-
-          {/* RIGHT SIDE — Locale when scrolled */}
-          <div className="hidden sm:flex items-center">
-            {scrolled && <LocaleSwitcher current={locale as any} />}
-          </div>
-
-          {/* DROPDOWN MENU */}
-          {menuOpen && scrolled && (
-            <div
+              href={section("contact")}
               className="
-                absolute left-0 top-16 w-64 rounded-2xl
-                bg-black/95 border border-white/10
-                shadow-xl px-5 py-4
-                text-sm flex flex-col gap-3
+                inline-flex items-center justify-center rounded-full
+                bg-white text-black text-sm font-medium
+                px-4 py-1.5
+                shadow-sm
+                hover:bg-zinc-200 transition
               "
             >
+              Ota yhteyttä
+            </Link>
+          </div>
+
+          {/* MOBILE: BURGER */}
+          <button
+            type="button"
+            onClick={() => setMenuOpen((v) => !v)}
+            aria-label="Toggle navigation"
+            className="
+              md:hidden inline-flex h-10 w-10 items-center justify-center
+              rounded-full border border-white/20 bg-black/70
+              text-white
+              transition-transform duration-200
+              active:scale-95
+            "
+          >
+            <div className="relative h-4 w-6">
+              <span
+                className={`
+                  absolute left-0 top-0 h-[2px] w-full rounded bg-white transition-all duration-200
+                  ${menuOpen ? "top-1/2 rotate-45" : ""}
+                `}
+              />
+              <span
+                className={`
+                  absolute left-0 top-1/2 h-[2px] w-full rounded bg-white transition-all duration-200
+                  ${menuOpen ? "opacity-0" : "-translate-y-1/2"}
+                `}
+              />
+              <span
+                className={`
+                  absolute left-0 bottom-0 h-[2px] w-full rounded bg-white transition-all duration-200
+                  ${menuOpen ? "bottom-1/2 -rotate-45" : ""}
+                `}
+              />
+            </div>
+          </button>
+        </nav>
+      </Container>
+
+      {/* MOBILE MENU PANEL */}
+      {menuOpen && (
+        <div className="md:hidden border-t border-white/10 bg-black/95">
+          <Container>
+            <div className="flex flex-col gap-3 py-4 text-sm">
               <Link
-                href={link("#services")}
+                href={section("services")}
                 onClick={closeMenu}
-                className="opacity-80 hover:opacity-100"
+                className="py-1 text-zinc-100 hover:text-white"
               >
                 Palvelut
               </Link>
               <Link
-                href={link("#work")}
+                href={section("work")}
                 onClick={closeMenu}
-                className="opacity-80 hover:opacity-100"
+                className="py-1 text-zinc-100 hover:text-white"
               >
                 Hinnasto
               </Link>
               <Link
-                href={link("#contact")}
+                href={section("contact")}
                 onClick={closeMenu}
-                className="opacity-80 hover:opacity-100"
+                className="py-1 text-zinc-100 hover:text-white"
               >
-                Ota yhteyttä
+                Yhteystiedot
               </Link>
 
-              <div className="pt-3 border-t border-white/10">
+              <div className="mt-3 flex items-center justify-between gap-3 pt-3 border-t border-white/10">
                 <LocaleSwitcher current={locale as any} />
+                <Link
+                  href={section("contact")}
+                  onClick={closeMenu}
+                  className="
+                    inline-flex items-center justify-center rounded-full
+                    bg-white text-black text-xs font-medium
+                    px-3 py-1
+                    hover:bg-zinc-200 transition
+                  "
+                >
+                  Ota yhteyttä
+                </Link>
               </div>
             </div>
-          )}
-        </nav>
-      </Container>
+          </Container>
+        </div>
+      )}
     </header>
   );
 }

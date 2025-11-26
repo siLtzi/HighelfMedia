@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const SHOOT_TYPES = [
   "Yrityskuvaus",
@@ -14,6 +14,18 @@ const SHOOT_TYPES = [
 ] as const;
 
 type ShootType = (typeof SHOOT_TYPES)[number];
+
+// map Sanity/URL slug -> calculator type label
+const SLUG_TO_TYPE: Record<string, ShootType> = {
+  yrityskuvaus: "Yrityskuvaus",
+  haakuvaus: "Hääkuvaus",
+  muotokuvaus: "Muotokuvaus",
+  "lapsi-ja-perhekuvaus": "Lapsi- ja perhekuvaus",
+  "rippi-ja-valmistujaiskuvaus": "Rippi- ja valmistujaiskuvaus",
+  asuntokuvaus: "Asuntokuvaus",
+  hautajaiskuvaus: "Hautajaiskuvaus",
+  elainkuvaus: "Eläinkuvaus",
+};
 
 const PRICING: Record<
   ShootType,
@@ -29,26 +41,95 @@ const PRICING: Record<
   Eläinkuvaus: { base: 160, hourly: 80, perPhoto: 16 },
 };
 
-export default function PhotoCalculator() {
-  const [shootType, setShootType] = useState<ShootType>("Yrityskuvaus");
+type ExtraOption = {
+  id: string;
+  label: string;
+  description?: string;
+  price: number;
+};
+
+const EXTRAS: Record<ShootType, ExtraOption[]> = {
+  Yrityskuvaus: [],
+  Hääkuvaus: [
+    {
+      id: "second-photographer",
+      label: "Lisäkuvaaja",
+      description:
+        "Toinen kuvaaja tärkeimpiin hetkiin (esim. vihkiminen, potretit)",
+      price: 200,
+    },
+  ],
+  Muotokuvaus: [],
+  "Lapsi- ja perhekuvaus": [],
+  "Rippi- ja valmistujaiskuvaus": [],
+  Asuntokuvaus: [
+    {
+      id: "aerial",
+      label: "Ilmakuvat (drone)",
+      description: "Ilmakuvaus talosta ja pihapiiristä",
+      price: 120,
+    },
+    {
+      id: "floorplan",
+      label: "Pohjakuvat",
+      description: "Selkeä pohjakuva ilmoitusta varten",
+      price: 80,
+    },
+    {
+      id: "twilight",
+      label: "Iltakuvat / twilight-kuvaus",
+      description: "Tunnelmalliset kuvat auringonlaskun jälkeen",
+      price: 70,
+    },
+  ],
+  Hautajaiskuvaus: [],
+  Eläinkuvaus: [],
+};
+
+type PhotoCalculatorProps = {
+  /** slug from the URL / Sanity, e.g. "yrityskuvaus" */
+  serviceSlug?: string;
+  /** if true, hide the type selector and lock to the mapped type */
+  lockToService?: boolean;
+};
+
+export default function PhotoCalculator({
+  serviceSlug,
+  lockToService = false,
+}: PhotoCalculatorProps) {
+  const initialType: ShootType =
+    (serviceSlug && SLUG_TO_TYPE[serviceSlug]) || "Yrityskuvaus";
+
+  const [shootType, setShootType] = useState<ShootType>(initialType);
   const [hours, setHours] = useState<number>(2);
   const [photos, setPhotos] = useState<number>(20);
-  const [travelKm, setTravelKm] = useState<number>(0);
-  const [includeRetouch, setIncludeRetouch] = useState<boolean>(true);
-
-  const TRAVEL_PRICE_PER_KM = 0.8; // € / km
-  const RETOUCH_FLAT = 40; // € 
+  const [selectedExtras, setSelectedExtras] = useState<string[]>([]);
 
   const config = PRICING[shootType];
+  const typeExtras = EXTRAS[shootType] ?? [];
+
+  // reset extras when type changes
+  useEffect(() => {
+    setSelectedExtras([]);
+  }, [shootType]);
+
+  const toggleExtra = (id: string) => {
+    setSelectedExtras((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+  };
 
   const { total, breakdown } = useMemo(() => {
     const base = config.base;
     const hoursPrice = hours * config.hourly;
     const photoPrice = photos * config.perPhoto;
-    const travelPrice = travelKm * TRAVEL_PRICE_PER_KM;
-    const retouchPrice = includeRetouch ? RETOUCH_FLAT : 0;
 
-    const sum = base + hoursPrice + photoPrice + travelPrice + retouchPrice;
+    const extrasForType = EXTRAS[shootType] ?? [];
+    const extrasPrice = extrasForType
+      .filter((e) => selectedExtras.includes(e.id))
+      .reduce((sum, e) => sum + e.price, 0);
+
+    const sum = base + hoursPrice + photoPrice + extrasPrice;
 
     return {
       total: sum,
@@ -56,11 +137,10 @@ export default function PhotoCalculator() {
         base,
         hoursPrice,
         photoPrice,
-        travelPrice,
-        retouchPrice,
+        extrasPrice,
       },
     };
-  }, [config, hours, photos, travelKm, includeRetouch]);
+  }, [config, hours, photos, selectedExtras, shootType]);
 
   const formatCurrency = (value: number) =>
     new Intl.NumberFormat("fi-FI", {
@@ -68,6 +148,36 @@ export default function PhotoCalculator() {
       currency: "EUR",
       maximumFractionDigits: 0,
     }).format(value);
+
+  const handleSendToContact = () => {
+    if (typeof window === "undefined") return;
+
+    const extrasForType = EXTRAS[shootType] ?? [];
+    const selected = extrasForType.filter((e) => selectedExtras.includes(e.id));
+
+    const lines: string[] = [
+      `Kuvaustyyppi: ${shootType}`,
+      `Arvioitu hinta: ${formatCurrency(total)}`,
+      "",
+      `Kuvausaika: ${hours} h`,
+      `Valmiit kuvat: ${photos} kpl`,
+    ];
+
+    if (selected.length) {
+      lines.push("", "Lisäpalvelut:");
+      for (const extra of selected) {
+        lines.push(`- ${extra.label} (+${formatCurrency(extra.price)})`);
+      }
+    }
+
+    const summary = lines.join("\n");
+
+    // save for the contact form
+    window.localStorage.setItem("highelf_quote", summary);
+
+    // jump to contact section
+    window.location.hash = "#contact";
+  };
 
   return (
     <div
@@ -80,34 +190,41 @@ export default function PhotoCalculator() {
     >
       {/* LEFT: controls */}
       <div className="space-y-6">
-        {/* Shoot type */}
+        {/* Shoot type selector or label */}
         <div className="space-y-2">
           <label className="block text-sm font-medium text-zinc-800 dark:text-zinc-200">
             Kuvaustyyppi
           </label>
-          <div className="grid gap-2 sm:grid-cols-2">
-            {SHOOT_TYPES.map((type) => {
-              const selected = type === shootType;
-              return (
-                <button
-                  key={type}
-                  type="button"
-                  onClick={() => setShootType(type)}
-                  className={`
-                    text-left text-sm rounded-xl border px-3 py-2.5
-                    transition
-                    ${
-                      selected
-                        ? "border-zinc-900 bg-zinc-900 text-white dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900"
-                        : "border-zinc-200/70 bg-zinc-50/60 text-zinc-800 dark:border-zinc-800 dark:bg-zinc-900/60 dark:text-zinc-200 hover:border-zinc-400/80"
-                    }
-                  `}
-                >
-                  {type}
-                </button>
-              );
-            })}
-          </div>
+
+          {lockToService ? (
+            <div className="inline-flex items-center rounded-full border border-zinc-300/70 dark:border-zinc-700 px-3 py-1.5 text-xs font-medium text-zinc-700 dark:text-zinc-200 bg-zinc-50/70 dark:bg-zinc-900/70">
+              {shootType}
+            </div>
+          ) : (
+            <div className="grid gap-2 sm:grid-cols-2">
+              {SHOOT_TYPES.map((type) => {
+                const selected = type === shootType;
+                return (
+                  <button
+                    key={type}
+                    type="button"
+                    onClick={() => setShootType(type)}
+                    className={`
+                      text-left text-sm rounded-xl border px-3 py-2.5
+                      transition
+                      ${
+                        selected
+                          ? "border-zinc-900 bg-zinc-900 text-white dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900"
+                          : "border-zinc-200/70 bg-zinc-50/60 text-zinc-800 dark:border-zinc-800 dark:bg-zinc-900/60 dark:text-zinc-200 hover:border-zinc-400/80"
+                      }
+                    `}
+                  >
+                    {type}
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         {/* Hours */}
@@ -167,7 +284,7 @@ export default function PhotoCalculator() {
               value={photos}
               onChange={(e) =>
                 setPhotos(
-                  Math.min(150, Math.max(5, Number(e.target.value) || 5)),
+                  Math.min(150, Math.max(5, Number(e.target.value) || 5))
                 )
               }
               className="
@@ -182,64 +299,44 @@ export default function PhotoCalculator() {
           </p>
         </div>
 
-        {/* Travel & retouching */}
-        <div className="grid gap-4 sm:grid-cols-2">
+        {/* Type-specific extras (real add-ons only, like drone / second shooter) */}
+        {typeExtras.length > 0 && (
           <div className="space-y-2">
             <label className="block text-sm font-medium text-zinc-800 dark:text-zinc-200">
-              Matka (km edestakaisin)
+              Lisäpalvelut tälle kuvaukselle
             </label>
-            <input
-              type="number"
-              min={0}
-              value={travelKm}
-              onChange={(e) =>
-                setTravelKm(Math.max(0, Number(e.target.value) || 0))
-              }
-              className="
-                w-full rounded-lg border border-zinc-300 dark:border-zinc-700
-                bg-white dark:bg-zinc-900 px-3 py-2 text-sm
-              "
-            />
-            <p className="text-xs text-zinc-500">
-              + {TRAVEL_PRICE_PER_KM.toFixed(2)} €/km
-            </p>
+            <div className="grid gap-2 sm:grid-cols-2">
+              {typeExtras.map((extra) => {
+                const selected = selectedExtras.includes(extra.id);
+                return (
+                  <button
+                    key={extra.id}
+                    type="button"
+                    onClick={() => toggleExtra(extra.id)}
+                    className={`
+                      text-left text-sm rounded-xl border px-3 py-2.5
+                      transition flex flex-col gap-1
+                      ${
+                        selected
+                          ? "border-zinc-900 bg-zinc-900 text-white dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900"
+                          : "border-zinc-200/70 bg-zinc-50/60 text-zinc-800 dark:border-zinc-800 dark:bg-zinc-900/60 dark:text-zinc-200 hover:border-zinc-400/80"
+                      }
+                    `}
+                  >
+                    <span className="font-medium">
+                      {extra.label} (+{formatCurrency(extra.price)})
+                    </span>
+                    {extra.description && (
+                      <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                        {extra.description}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
           </div>
-
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-zinc-800 dark:text-zinc-200">
-              Sisältää kevyen peruseditoinnin
-            </label>
-            <button
-              type="button"
-              onClick={() => setIncludeRetouch((v) => !v)}
-              className={`
-                inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-sm transition
-                ${
-                  includeRetouch
-                    ? "border-emerald-500/80 bg-emerald-500/10 text-emerald-700 dark:border-emerald-400/80 dark:text-emerald-300"
-                    : "border-zinc-300/70 bg-zinc-50/50 text-zinc-700 dark:border-zinc-700 dark:bg-zinc-900/60 dark:text-zinc-200"
-                }
-              `}
-            >
-              <span
-                className={`
-                  inline-flex h-4 w-4 items-center justify-center rounded-full border text-[10px]
-                  ${
-                    includeRetouch
-                      ? "border-emerald-500 bg-emerald-500 text-white"
-                      : "border-zinc-400 text-transparent"
-                  }
-                `}
-              >
-                ✓
-              </span>
-              <span>
-                {includeRetouch ? "Kyllä" : "Ei, poista lisämaksu"} (
-                {formatCurrency(RETOUCH_FLAT)})
-              </span>
-            </button>
-          </div>
-        </div>
+        )}
       </div>
 
       {/* RIGHT: summary */}
@@ -262,6 +359,27 @@ export default function PhotoCalculator() {
             laskuri.
           </p>
 
+          <div className="mt-6 border-t border-zinc-200/70 dark:border-zinc-800 pt-4 text-xs text-zinc-500 dark:text-zinc-400">
+            <p>
+              Laskuri auttaa hahmottamaan suuruusluokan. Kirjoita valinnat
+              yhteydenottolomakkeeseen, niin teen tarkan tarjouksen – matkakulut
+              ja erityistilanteet sovitaan aina erikseen.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleSendToContact}
+            className="
+    mt-4 w-full rounded-xl border border-zinc-300 dark:border-zinc-700
+    text-sm px-4 py-2.5
+    hover:bg-zinc-100 dark:hover:bg-zinc-900/60
+    transition cursor-pointer
+  "
+          >
+            Lisää valinnat yhteydenottolomakkeelle
+          </button>
+
           <div className="mt-5 space-y-2 text-sm">
             <div className="flex justify-between gap-4">
               <span>Peruspaketti</span>
@@ -275,21 +393,15 @@ export default function PhotoCalculator() {
             </div>
             <div className="flex justify-between gap-4">
               <span>
-                Valmiit kuvat ({photos} kpl ×{" "}
-                {formatCurrency(config.perPhoto)}/kpl)
+                Valmiit kuvat ({photos} kpl × {formatCurrency(config.perPhoto)}
+                /kpl)
               </span>
               <span>{formatCurrency(breakdown.photoPrice)}</span>
             </div>
-            {breakdown.travelPrice > 0 && (
+            {breakdown.extrasPrice > 0 && (
               <div className="flex justify-between gap-4">
-                <span>Matkakulut ({travelKm} km)</span>
-                <span>{formatCurrency(breakdown.travelPrice)}</span>
-              </div>
-            )}
-            {includeRetouch && (
-              <div className="flex justify-between gap-4">
-                <span>Peruseditointi</span>
-                <span>{formatCurrency(breakdown.retouchPrice)}</span>
+                <span>Lisäpalvelut</span>
+                <span>{formatCurrency(breakdown.extrasPrice)}</span>
               </div>
             )}
           </div>
@@ -297,9 +409,9 @@ export default function PhotoCalculator() {
 
         <div className="mt-6 border-t border-zinc-200/70 dark:border-zinc-800 pt-4 text-xs text-zinc-500 dark:text-zinc-400">
           <p>
-            Kun olet löytänyt sopivan paketin, voit lähettää tiedot minulle
-            yhteydenottolomakkeen kautta. Laskurin valinnat voi liittää
-            viestiin.
+            Laskuri auttaa hahmottamaan suuruusluokan. Kirjoita valinnat
+            yhteydenottolomakkeeseen, niin teen tarkan tarjouksen – matkakulut
+            ja erityistilanteet sovitaan aina erikseen.
           </p>
         </div>
       </div>
