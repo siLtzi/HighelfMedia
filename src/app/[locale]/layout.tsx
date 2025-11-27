@@ -12,9 +12,10 @@ export default async function RootLayout({
   params,
 }: {
   children: ReactNode;
-  params: { locale?: string };
+  params: Promise<{ locale: string }>;
 }) {
-  const rawLocale = params?.locale;
+  const { locale: rawLocale } = await params;
+
   const locale: SupportedLocale =
     rawLocale === "en" || rawLocale === "fi" ? rawLocale : "fi";
 
