@@ -1,9 +1,9 @@
 {
   "nav": {
+    "about": "About me",
     "home": "Home",
     "services": "Services",
-    "work": "Work",
-    "contact": "Contact"
+    "work": "Work"
   },
   "hero": {
     "title": "We build fast websites that convert.",
@@ -27,9 +27,15 @@
       "elainkuvaus": "Pet photography"
     }
   },
-  "work": { "title": "Pricing", "cta": "View more" },
-  "footer": { "copyright": "© {year} Digipaja. All rights reserved." },
-  "cta": { "contact": "Get a quote" },
+  "work": {
+    "title": "Pricing",
+    "subtitle": "Build a photo package that suits you."
+  },
+
+    "footer": {
+    "instagram": "Highelf Media",
+    "copyright": "© {year} Highelf Media. Kaikki oikeudet pidätetään."
+  },
 
   "contact": {
     "title": "Contact",

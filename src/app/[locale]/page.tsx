@@ -3,24 +3,42 @@ import Services from "@/components/Services";
 import Work from "@/components/Work";
 import Contact from "@/components/Contact";
 import About from "@/components/About";
-import { getPricingConfig } from "@/sanity/lib/queries"; // 👈 add this
+
+import {
+  getPricingConfig,
+  getHeroBackgroundPairs,
+  type HeroBackgroundFromSanity,
+} from "@/sanity/lib/queries";
+import { urlForImage } from "@/sanity/lib/image";
 
 export default async function Page({
   params,
 }: {
-  params: Promise<{ locale: "fi" | "en" }>;
+  params: { locale: "fi" | "en" };
 }) {
-  const { locale } = await params;
+  const { locale } = params;
 
-  // 👇 fetch pricing once for the whole homepage
-  const pricing = await getPricingConfig();
+  // Fetch pricing + hero backgrounds in parallel
+  const [pricing, rawHeroPairs] = await Promise.all([
+    getPricingConfig(),
+    getHeroBackgroundPairs(),
+  ]);
+
+  const heroPairs =
+    rawHeroPairs && rawHeroPairs.length > 0
+      ? rawHeroPairs
+          .filter((p) => p.top && p.bottom)
+          .map((p) => ({
+            top: urlForImage(p.top).width(1920).height(1080).url(),
+            bottom: urlForImage(p.bottom).width(1920).height(1080).url(),
+          }))
+      : undefined;
 
   return (
     <>
-      <Hero />
+      <Hero backgroundPairs={heroPairs} />
       <About />
       <Services locale={locale} />
-      {/* 👇 pass pricing into Work */}
       <Work locale={locale} pricing={pricing} />
       <Contact locale={locale} />
     </>

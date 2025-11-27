@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import Container from "./Container";
 import LocaleSwitcher from "./LocaleSwitcher";
 
@@ -12,6 +13,9 @@ export default function Navbar({ locale }: { locale: string }) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
+  const tNav = useTranslations("nav");
+  const tCta = useTranslations("cta");
+
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 40);
     handler();
@@ -19,7 +23,6 @@ export default function Navbar({ locale }: { locale: string }) {
     return () => window.removeEventListener("scroll", handler);
   }, []);
 
-  // Close mobile menu on route hash clicks
   const closeMenu = () => setMenuOpen(false);
 
   return (
@@ -27,7 +30,11 @@ export default function Navbar({ locale }: { locale: string }) {
       className={`
         fixed inset-x-0 top-0 z-50
         transition-all duration-300
-        ${scrolled ? "bg-black/90 border-b border-white/10" : "bg-gradient-to-b from-black/80 via-black/40 to-transparent border-b border-transparent"}
+        ${
+          scrolled
+            ? "bg-black/90 border-b border-white/10"
+            : "bg-gradient-to-b from-black/80 via-black/40 to-transparent border-b border-transparent"
+        }
         backdrop-blur-md
       `}
     >
@@ -46,24 +53,25 @@ export default function Navbar({ locale }: { locale: string }) {
 
           {/* CENTER: DESKTOP NAV */}
           <div className="hidden md:flex items-center gap-8 text-sm">
+
+            <Link
+              href={section("about")}
+              className="relative text-zinc-200/90 hover:text-white transition"
+            >
+              {tNav("about")}
+            </Link>
             <Link
               href={section("services")}
               className="relative text-zinc-200/90 hover:text-white transition"
             >
-              <span>Palvelut</span>
+              <span>{tNav("services")}</span>
               <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-white transition-all duration-200 group-hover:w-full" />
             </Link>
             <Link
               href={section("work")}
               className="text-zinc-200/90 hover:text-white transition"
             >
-              Hinnasto
-            </Link>
-            <Link
-              href={section("contact")}
-              className="text-zinc-200/90 hover:text-white transition"
-            >
-              Yhteystiedot
+              {tNav("work")}
             </Link>
           </div>
 
@@ -80,7 +88,7 @@ export default function Navbar({ locale }: { locale: string }) {
                 hover:bg-zinc-200 transition
               "
             >
-              Ota yhteyttä
+              {tCta("contact")}
             </Link>
           </div>
 
@@ -126,26 +134,28 @@ export default function Navbar({ locale }: { locale: string }) {
         <div className="md:hidden border-t border-white/10 bg-black/95">
           <Container>
             <div className="flex flex-col gap-3 py-4 text-sm">
+
+              <Link
+                href={section("about")}
+                onClick={closeMenu}
+                className="py-1 text-zinc-100 hover:text-white"
+              >
+                {tNav("about")}
+              </Link>
+
               <Link
                 href={section("services")}
                 onClick={closeMenu}
                 className="py-1 text-zinc-100 hover:text-white"
               >
-                Palvelut
+                {tNav("services")}
               </Link>
               <Link
                 href={section("work")}
                 onClick={closeMenu}
                 className="py-1 text-zinc-100 hover:text-white"
               >
-                Hinnasto
-              </Link>
-              <Link
-                href={section("contact")}
-                onClick={closeMenu}
-                className="py-1 text-zinc-100 hover:text-white"
-              >
-                Yhteystiedot
+                {tNav("work")}
               </Link>
 
               <div className="mt-3 flex items-center justify-between gap-3 pt-3 border-t border-white/10">
@@ -160,7 +170,7 @@ export default function Navbar({ locale }: { locale: string }) {
                     hover:bg-zinc-200 transition
                   "
                 >
-                  Ota yhteyttä
+                  {tCta("contact")}
                 </Link>
               </div>
             </div>

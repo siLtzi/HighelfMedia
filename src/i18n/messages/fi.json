@@ -1,9 +1,9 @@
 {
   "nav": {
+    "about": "Tietoa minusta",
     "home": "Etusivu",
     "services": "Palvelut",
-    "work": "Hinnasto",
-    "contact": "Yhteys"
+    "work": "Hinnasto"
   },
 
   "hero": {
@@ -27,12 +27,11 @@
 
   "work": {
     "title": "Hinnasto",
-    "subtitle": "Rakenna sinulle sopiva kuvauspaketti.",
-    "cta": "Lue lisää",
-    "viewCase": "Avaa galleria"
+    "subtitle": "Rakenna sinulle sopiva kuvauspaketti."
   },
 
   "footer": {
+    "instagram": "Highelf Media",
     "copyright": "© {year} Highelf Media. Kaikki oikeudet pidätetään."
   },
 

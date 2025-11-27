@@ -7,8 +7,9 @@ import { LOGO_PATHS } from "@/lib/logoPaths";
 const VB_W = 1920;
 const VB_H = 1080;
 
-// background image pairs (top/bottom)
-const BACKGROUND_PAIRS = [
+type BackgroundPair = { top: string; bottom: string };
+
+const FALLBACK_BACKGROUND_PAIRS: BackgroundPair[] = [
   {
     top: "/hero-top.png",
     bottom: "/hero-bottom.png",
@@ -25,7 +26,11 @@ const BACKGROUND_PAIRS = [
 
 const SLIDE_INTERVAL = 3000; // ms between background changes
 
-export default function Hero() {
+type HeroProps = {
+  backgroundPairs?: BackgroundPair[];
+};
+
+export default function Hero({ backgroundPairs }: HeroProps) {
   // timings
   const LOGO_APPEAR_DELAY = 0;
   const LOGO_APPEAR_DUR = 1.2;
@@ -34,22 +39,27 @@ export default function Hero() {
   const UNDERLINE_DELAY = LOGO_APPEAR_DELAY + LOGO_APPEAR_DUR + 0.03;
   const MEDIA_DELAY = UNDERLINE_WIPE + 0.1;
 
+  const pairs =
+    backgroundPairs && backgroundPairs.length > 0
+      ? backgroundPairs
+      : FALLBACK_BACKGROUND_PAIRS;
+
   const [activeIndex, setActiveIndex] = useState(0);
   const [prevIndex, setPrevIndex] = useState<number | null>(null);
 
   useEffect(() => {
-    if (BACKGROUND_PAIRS.length <= 1) return;
+    if (pairs.length <= 1) return;
 
     const id = setInterval(() => {
       setActiveIndex((current) => {
-        const next = (current + 1) % BACKGROUND_PAIRS.length;
+        const next = (current + 1) % pairs.length;
         setPrevIndex(current);
         return next;
       });
     }, SLIDE_INTERVAL);
 
     return () => clearInterval(id);
-  }, []);
+  }, [pairs.length]);
 
   return (
     <section
@@ -63,13 +73,12 @@ export default function Hero() {
     >
       {/* ==== BACKGROUND WITH OPPOSITE SLIDE + ANTICIPATION ==== */}
       <div
-  className="
-    pointer-events-none absolute inset-0 -z-10
-    overflow-hidden hero-bg-fade
-  "
->
-
-        {BACKGROUND_PAIRS.map((pair, i) => {
+        className="
+          pointer-events-none absolute inset-0 -z-10
+          overflow-hidden hero-bg-fade
+        "
+      >
+        {pairs.map((pair, i) => {
           const isActive = i === activeIndex;
           const isPrev = i === prevIndex;
 
@@ -79,10 +88,10 @@ export default function Hero() {
                 ? "initial-active"
                 : "initial-rest"
               : isActive
-              ? "active"
-              : isPrev
-              ? "prev"
-              : "rest";
+                ? "active"
+                : isPrev
+                  ? "prev"
+                  : "rest";
 
           let topClass =
             "absolute inset-0 bg-cover bg-center hero-split-top will-change-transform";
@@ -112,12 +121,7 @@ export default function Hero() {
               break;
           }
 
-          const zIndex =
-            role === "prev"
-              ? 30 
-              : role === "active"
-              ? 20 
-              : 10; 
+          const zIndex = role === "prev" ? 30 : role === "active" ? 20 : 10;
 
           return (
             <div
