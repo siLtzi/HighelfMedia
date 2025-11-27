@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Container from "./Container";
 import Reveal from "./Reveal";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 
 type CardProps = {
   title: string;

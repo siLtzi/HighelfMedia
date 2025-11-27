@@ -14,9 +14,11 @@ import { urlForImage } from "@/sanity/lib/image";
 export default async function Page({
   params,
 }: {
-  params: { locale: "fi" | "en" };
+  params: { locale?: string };
 }) {
-  const { locale } = params;
+  const rawLocale = params?.locale;
+  const locale: "fi" | "en" =
+    rawLocale === "en" || rawLocale === "fi" ? rawLocale : "fi";
 
   // Fetch pricing + hero backgrounds in parallel
   const [pricing, rawHeroPairs] = await Promise.all([
