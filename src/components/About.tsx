@@ -10,9 +10,11 @@ export default function About() {
 
   return (
     <section
-      id="about"
-      className="relative py-24 lg:py-32"
-    >
+  id="about"
+  className="
+    py-24
+  "
+>
       <Container>
         <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
           {/* Text */}

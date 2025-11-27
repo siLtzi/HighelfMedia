@@ -1,112 +1,127 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useState,
+  type ChangeEvent,
+} from "react";
+import { useTranslations } from "next-intl";
 
 const SHOOT_TYPES = [
-  "Yrityskuvaus",
-  "Hääkuvaus",
-  "Muotokuvaus",
-  "Lapsi- ja perhekuvaus",
-  "Rippi- ja valmistujaiskuvaus",
-  "Asuntokuvaus",
-  "Hautajaiskuvaus",
-  "Eläinkuvaus",
+  "yrityskuvaus",
+  "haakuvaus",
+  "muotokuvaus",
+  "lapsi-ja-perhekuvaus",
+  "rippi-ja-valmistujaiskuvaus",
+  "asuntokuvaus",
+  "hautajaiskuvaus",
+  "elainkuvaus",
 ] as const;
 
 type ShootType = (typeof SHOOT_TYPES)[number];
 
-// map Sanity/URL slug -> calculator type label
+// map Sanity/URL slug -> internal type slug (same for now, but flexible)
 const SLUG_TO_TYPE: Record<string, ShootType> = {
-  yrityskuvaus: "Yrityskuvaus",
-  haakuvaus: "Hääkuvaus",
-  muotokuvaus: "Muotokuvaus",
-  "lapsi-ja-perhekuvaus": "Lapsi- ja perhekuvaus",
-  "rippi-ja-valmistujaiskuvaus": "Rippi- ja valmistujaiskuvaus",
-  asuntokuvaus: "Asuntokuvaus",
-  hautajaiskuvaus: "Hautajaiskuvaus",
-  elainkuvaus: "Eläinkuvaus",
-};
-
-const PRICING: Record<
-  ShootType,
-  { base: number; hourly: number; perPhoto: number }
-> = {
-  Yrityskuvaus: { base: 250, hourly: 120, perPhoto: 20 },
-  Hääkuvaus: { base: 450, hourly: 140, perPhoto: 25 },
-  Muotokuvaus: { base: 180, hourly: 90, perPhoto: 18 },
-  "Lapsi- ja perhekuvaus": { base: 200, hourly: 100, perPhoto: 18 },
-  "Rippi- ja valmistujaiskuvaus": { base: 180, hourly: 90, perPhoto: 18 },
-  Asuntokuvaus: { base: 220, hourly: 110, perPhoto: 16 },
-  Hautajaiskuvaus: { base: 260, hourly: 110, perPhoto: 18 },
-  Eläinkuvaus: { base: 160, hourly: 80, perPhoto: 16 },
+  yrityskuvaus: "yrityskuvaus",
+  haakuvaus: "haakuvaus",
+  muotokuvaus: "muotokuvaus",
+  "lapsi-ja-perhekuvaus": "lapsi-ja-perhekuvaus",
+  "rippi-ja-valmistujaiskuvaus": "rippi-ja-valmistujaiskuvaus",
+  asuntokuvaus: "asuntokuvaus",
+  hautajaiskuvaus: "hautajaiskuvaus",
+  elainkuvaus: "elainkuvaus",
 };
 
 type ExtraOption = {
   id: string;
-  label: string;
-  description?: string;
   price: number;
 };
 
-const EXTRAS: Record<ShootType, ExtraOption[]> = {
-  Yrityskuvaus: [],
-  Hääkuvaus: [
+type PricingEntry = {
+  base: number;
+  hourly: number;
+  perPhoto: number;
+  extras: ExtraOption[];
+};
+
+// ✅ Built-in fallback pricing (used if no Sanity pricing is passed)
+const PRICING_FALLBACK: Record<
+  ShootType,
+  { base: number; hourly: number; perPhoto: number }
+> = {
+  yrityskuvaus: { base: 250, hourly: 120, perPhoto: 20 },
+  haakuvaus: { base: 450, hourly: 140, perPhoto: 25 },
+  muotokuvaus: { base: 180, hourly: 90, perPhoto: 18 },
+  "lapsi-ja-perhekuvaus": { base: 200, hourly: 100, perPhoto: 18 },
+  "rippi-ja-valmistujaiskuvaus": { base: 180, hourly: 90, perPhoto: 18 },
+  asuntokuvaus: { base: 220, hourly: 110, perPhoto: 16 },
+  hautajaiskuvaus: { base: 260, hourly: 110, perPhoto: 18 },
+  elainkuvaus: { base: 160, hourly: 80, perPhoto: 16 },
+};
+
+const EXTRAS_FALLBACK: Record<ShootType, ExtraOption[]> = {
+  yrityskuvaus: [],
+  haakuvaus: [
     {
       id: "second-photographer",
-      label: "Lisäkuvaaja",
-      description:
-        "Toinen kuvaaja tärkeimpiin hetkiin (esim. vihkiminen, potretit)",
       price: 200,
     },
   ],
-  Muotokuvaus: [],
-  "Lapsi- ja perhekuvaus": [],
-  "Rippi- ja valmistujaiskuvaus": [],
-  Asuntokuvaus: [
+  muotokuvaus: [],
+  "lapsi-ja-perhekuvaus": [],
+  "rippi-ja-valmistujaiskuvaus": [],
+  asuntokuvaus: [
     {
       id: "aerial",
-      label: "Ilmakuvat (drone)",
-      description: "Ilmakuvaus talosta ja pihapiiristä",
       price: 120,
     },
     {
       id: "floorplan",
-      label: "Pohjakuvat",
-      description: "Selkeä pohjakuva ilmoitusta varten",
       price: 80,
     },
     {
       id: "twilight",
-      label: "Iltakuvat / twilight-kuvaus",
-      description: "Tunnelmalliset kuvat auringonlaskun jälkeen",
       price: 70,
     },
   ],
-  Hautajaiskuvaus: [],
-  Eläinkuvaus: [],
+  hautajaiskuvaus: [],
+  elainkuvaus: [],
 };
 
+type PricingMap = Record<string, PricingEntry>;
+
 type PhotoCalculatorProps = {
-  /** slug from the URL / Sanity, e.g. "yrityskuvaus" */
   serviceSlug?: string;
-  /** if true, hide the type selector and lock to the mapped type */
   lockToService?: boolean;
+  pricing?: PricingMap;
 };
 
 export default function PhotoCalculator({
   serviceSlug,
   lockToService = false,
+  pricing,
 }: PhotoCalculatorProps) {
+  const tEstimator = useTranslations("estimator");
+  const tServices = useTranslations("services");
+
   const initialType: ShootType =
-    (serviceSlug && SLUG_TO_TYPE[serviceSlug]) || "Yrityskuvaus";
+    (serviceSlug && SLUG_TO_TYPE[serviceSlug]) || "yrityskuvaus";
 
   const [shootType, setShootType] = useState<ShootType>(initialType);
   const [hours, setHours] = useState<number>(2);
   const [photos, setPhotos] = useState<number>(20);
   const [selectedExtras, setSelectedExtras] = useState<string[]>([]);
 
-  const config = PRICING[shootType];
-  const typeExtras = EXTRAS[shootType] ?? [];
+  // 🔧 merge Sanity pricing (if provided) with fallback
+  const override = pricing?.[shootType];
+  const config = {
+    base: override?.base ?? PRICING_FALLBACK[shootType].base,
+    hourly: override?.hourly ?? PRICING_FALLBACK[shootType].hourly,
+    perPhoto: override?.perPhoto ?? PRICING_FALLBACK[shootType].perPhoto,
+  };
+  const typeExtras: ExtraOption[] =
+    override?.extras ?? EXTRAS_FALLBACK[shootType] ?? [];
 
   // reset extras when type changes
   useEffect(() => {
@@ -124,10 +139,12 @@ export default function PhotoCalculator({
     const hoursPrice = hours * config.hourly;
     const photoPrice = photos * config.perPhoto;
 
-    const extrasForType = EXTRAS[shootType] ?? [];
-    const extrasPrice = extrasForType
+    const extrasPrice = typeExtras
       .filter((e) => selectedExtras.includes(e.id))
-      .reduce((sum, e) => sum + e.price, 0);
+      .reduce(
+        (sum: number, extra: ExtraOption) => sum + extra.price,
+        0
+      );
 
     const sum = base + hoursPrice + photoPrice + extrasPrice;
 
@@ -140,7 +157,7 @@ export default function PhotoCalculator({
         extrasPrice,
       },
     };
-  }, [config, hours, photos, selectedExtras, shootType]);
+  }, [config.base, config.hourly, config.perPhoto, hours, photos, selectedExtras, typeExtras]);
 
   const formatCurrency = (value: number) =>
     new Intl.NumberFormat("fi-FI", {
@@ -152,31 +169,45 @@ export default function PhotoCalculator({
   const handleSendToContact = () => {
     if (typeof window === "undefined") return;
 
-    const extrasForType = EXTRAS[shootType] ?? [];
-    const selected = extrasForType.filter((e) => selectedExtras.includes(e.id));
+    const selected = typeExtras.filter((e) =>
+      selectedExtras.includes(e.id)
+    );
+
+    const typeLabel = tServices(`labels.${shootType}` as any);
 
     const lines: string[] = [
-      `Kuvaustyyppi: ${shootType}`,
-      `Arvioitu hinta: ${formatCurrency(total)}`,
+      tEstimator("summary.type", { type: typeLabel }),
+      tEstimator("summary.estimatedPrice", {
+        price: formatCurrency(total),
+      }),
       "",
-      `Kuvausaika: ${hours} h`,
-      `Valmiit kuvat: ${photos} kpl`,
+      `${tEstimator("fields.hours")}: ${hours} ${tEstimator("units.hours")}`,
+      `${tEstimator("fields.photos")}: ${photos} ${tEstimator("units.photos")}`,
     ];
 
     if (selected.length) {
-      lines.push("", "Lisäpalvelut:");
+      lines.push("", tEstimator("summary.extrasTitle"));
       for (const extra of selected) {
-        lines.push(`- ${extra.label} (+${formatCurrency(extra.price)})`);
+        const label = tEstimator(
+          `extras.${shootType}.${extra.id}.label` as any
+        );
+        lines.push(
+          tEstimator("summary.extraLine", {
+            label,
+            price: formatCurrency(extra.price),
+          })
+        );
       }
     }
 
     const summary = lines.join("\n");
 
-    // save for the contact form
     window.localStorage.setItem("highelf_quote", summary);
-
-    // jump to contact section
     window.location.hash = "#contact";
+    console.log("PRICING FROM SANITY:", pricing);
+console.log("SERVICE TYPE:", shootType);
+console.log("USING CONFIG:", pricing?.[shootType]);
+
   };
 
   return (
@@ -193,17 +224,18 @@ export default function PhotoCalculator({
         {/* Shoot type selector or label */}
         <div className="space-y-2">
           <label className="block text-sm font-medium text-zinc-800 dark:text-zinc-200">
-            Kuvaustyyppi
+            {tEstimator("fields.type")}
           </label>
 
           {lockToService ? (
             <div className="inline-flex items-center rounded-full border border-zinc-300/70 dark:border-zinc-700 px-3 py-1.5 text-xs font-medium text-zinc-700 dark:text-zinc-200 bg-zinc-50/70 dark:bg-zinc-900/70">
-              {shootType}
+              {tServices(`labels.${shootType}` as any)}
             </div>
           ) : (
             <div className="grid gap-2 sm:grid-cols-2">
               {SHOOT_TYPES.map((type) => {
                 const selected = type === shootType;
+                const label = tServices(`labels.${type}` as any);
                 return (
                   <button
                     key={type}
@@ -219,7 +251,7 @@ export default function PhotoCalculator({
                       }
                     `}
                   >
-                    {type}
+                    {label}
                   </button>
                 );
               })}
@@ -230,42 +262,53 @@ export default function PhotoCalculator({
         {/* Hours */}
         <div className="space-y-2">
           <label className="block text-sm font-medium text-zinc-800 dark:text-zinc-200">
-            Kuvaustunnit
+            {tEstimator("fields.hours")}
           </label>
           <div className="flex items-center gap-3">
             <input
               type="range"
               min={1}
-              max={10}
+              max={16}
               value={hours}
-              onChange={(e) => setHours(Number(e.target.value) || 0)}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setHours(Number(e.target.value) || 0)
+              }
               className="w-full"
             />
             <input
               type="number"
               min={1}
-              max={10}
+              max={16}
               value={hours}
-              onChange={(e) =>
-                setHours(Math.min(10, Math.max(1, Number(e.target.value) || 1)))
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setHours(
+                  Math.min(
+                    16,
+                    Math.max(1, Number(e.target.value) || 1)
+                  )
+                )
               }
               className="
                 w-16 rounded-lg border border-zinc-300 dark:border-zinc-700
                 bg-white dark:bg-zinc-900 px-2 py-1 text-sm
               "
             />
-            <span className="text-xs text-zinc-500">h</span>
+            <span className="text-xs text-zinc-500">
+              {tEstimator("units.hours")}
+            </span>
           </div>
           <p className="text-xs text-zinc-500">
-            Perushinta: {formatCurrency(config.base)} +{" "}
-            {formatCurrency(config.hourly)}/h
+            {tEstimator("helper.baseLine", {
+              base: formatCurrency(config.base),
+              hourly: formatCurrency(config.hourly),
+            })}
           </p>
         </div>
 
         {/* Photos */}
         <div className="space-y-2">
           <label className="block text-sm font-medium text-zinc-800 dark:text-zinc-200">
-            Valmiit kuvat (editoinnin jälkeen)
+            {tEstimator("fields.photos")}
           </label>
           <div className="flex items-center gap-3">
             <input
@@ -274,7 +317,9 @@ export default function PhotoCalculator({
               max={150}
               step={5}
               value={photos}
-              onChange={(e) => setPhotos(Number(e.target.value) || 0)}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setPhotos(Number(e.target.value) || 0)
+              }
               className="w-full"
             />
             <input
@@ -282,9 +327,12 @@ export default function PhotoCalculator({
               min={5}
               max={150}
               value={photos}
-              onChange={(e) =>
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
                 setPhotos(
-                  Math.min(150, Math.max(5, Number(e.target.value) || 5))
+                  Math.min(
+                    150,
+                    Math.max(5, Number(e.target.value) || 5)
+                  )
                 )
               }
               className="
@@ -292,22 +340,33 @@ export default function PhotoCalculator({
                 bg-white dark:bg-zinc-900 px-2 py-1 text-sm
               "
             />
-            <span className="text-xs text-zinc-500">kpl</span>
+            <span className="text-xs text-zinc-500">
+              {tEstimator("units.photos")}
+            </span>
           </div>
           <p className="text-xs text-zinc-500">
-            + {formatCurrency(config.perPhoto)}/kuva
+            {tEstimator("helper.perPhotoLine", {
+              rate: formatCurrency(config.perPhoto),
+            })}
           </p>
         </div>
 
-        {/* Type-specific extras (real add-ons only, like drone / second shooter) */}
+        {/* Type-specific extras */}
         {typeExtras.length > 0 && (
           <div className="space-y-2">
             <label className="block text-sm font-medium text-zinc-800 dark:text-zinc-200">
-              Lisäpalvelut tälle kuvaukselle
+              {tEstimator("breakdown.extrasLabel")}
             </label>
             <div className="grid gap-2 sm:grid-cols-2">
               {typeExtras.map((extra) => {
                 const selected = selectedExtras.includes(extra.id);
+                const label = tEstimator(
+                  `extras.${shootType}.${extra.id}.label` as any
+                );
+                const description = tEstimator(
+                  `extras.${shootType}.${extra.id}.description` as any
+                );
+
                 return (
                   <button
                     key={extra.id}
@@ -324,11 +383,11 @@ export default function PhotoCalculator({
                     `}
                   >
                     <span className="font-medium">
-                      {extra.label} (+{formatCurrency(extra.price)})
+                      {label} (+{formatCurrency(extra.price)})
                     </span>
-                    {extra.description && (
+                    {description && (
                       <span className="text-xs text-zinc-500 dark:text-zinc-400">
-                        {extra.description}
+                        {description}
                       </span>
                     )}
                   </button>
@@ -349,58 +408,58 @@ export default function PhotoCalculator({
       >
         <div>
           <h3 className="text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
-            Arvioitu hinta
+            {tEstimator("total.label")}
           </h3>
           <p className="mt-2 text-3xl font-semibold tracking-tight">
             {formatCurrency(total)}
           </p>
           <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-            Lopullinen hinta tarkentuu tarjouksessa – tämä on suuntaa-antava
-            laskuri.
+            {tEstimator("total.approxNote")}
           </p>
 
           <div className="mt-6 border-t border-zinc-200/70 dark:border-zinc-800 pt-4 text-xs text-zinc-500 dark:text-zinc-400">
-            <p>
-              Laskuri auttaa hahmottamaan suuruusluokan. Kirjoita valinnat
-              yhteydenottolomakkeeseen, niin teen tarkan tarjouksen – matkakulut
-              ja erityistilanteet sovitaan aina erikseen.
-            </p>
+            <p>{tEstimator("helper.summary")}</p>
           </div>
 
           <button
             type="button"
             onClick={handleSendToContact}
             className="
-    mt-4 w-full rounded-xl border border-zinc-300 dark:border-zinc-700
-    text-sm px-4 py-2.5
-    hover:bg-zinc-100 dark:hover:bg-zinc-900/60
-    transition cursor-pointer
-  "
+              mt-4 w-full rounded-xl border border-zinc-300 dark:border-zinc-700
+              text-sm px-4 py-2.5
+              hover:bg-zinc-100 dark:hover:bg-zinc-900/60
+              transition cursor-pointer
+            "
           >
-            Lisää valinnat yhteydenottolomakkeelle
+            {tEstimator("cta")}
           </button>
 
           <div className="mt-5 space-y-2 text-sm">
             <div className="flex justify-between gap-4">
-              <span>Peruspaketti</span>
+              <span>{tEstimator("breakdown.baseLabel")}</span>
               <span>{formatCurrency(breakdown.base)}</span>
             </div>
             <div className="flex justify-between gap-4">
               <span>
-                Kuvaus ({hours} h × {formatCurrency(config.hourly)}/h)
+                {tEstimator("breakdown.hoursLabel", {
+                  hours,
+                  rate: formatCurrency(config.hourly),
+                })}
               </span>
               <span>{formatCurrency(breakdown.hoursPrice)}</span>
             </div>
             <div className="flex justify-between gap-4">
               <span>
-                Valmiit kuvat ({photos} kpl × {formatCurrency(config.perPhoto)}
-                /kpl)
+                {tEstimator("breakdown.photosLabel", {
+                  count: photos,
+                  rate: formatCurrency(config.perPhoto),
+                })}
               </span>
               <span>{formatCurrency(breakdown.photoPrice)}</span>
             </div>
             {breakdown.extrasPrice > 0 && (
               <div className="flex justify-between gap-4">
-                <span>Lisäpalvelut</span>
+                <span>{tEstimator("breakdown.extrasLabel")}</span>
                 <span>{formatCurrency(breakdown.extrasPrice)}</span>
               </div>
             )}
@@ -408,11 +467,7 @@ export default function PhotoCalculator({
         </div>
 
         <div className="mt-6 border-t border-zinc-200/70 dark:border-zinc-800 pt-4 text-xs text-zinc-500 dark:text-zinc-400">
-          <p>
-            Laskuri auttaa hahmottamaan suuruusluokan. Kirjoita valinnat
-            yhteydenottolomakkeeseen, niin teen tarkan tarjouksen – matkakulut
-            ja erityistilanteet sovitaan aina erikseen.
-          </p>
+          <p>{tEstimator("helper.summary")}</p>
         </div>
       </div>
     </div>

@@ -21,7 +21,10 @@ export default function Contact({ locale }: { locale: string }) {
   return (
     <section
       id="contact"
-      className="min-h-screen flex items-center px-[clamp(16px,8vw,128px)] py-20"
+      className="
+      min-h-screen flex items-center
+      px-[clamp(16px,8vw,128px)] py-20
+    "
     >
       <Container>
         <div className="grid sm:grid-cols-2 gap-12 items-center">
@@ -35,8 +38,7 @@ export default function Contact({ locale }: { locale: string }) {
               </p>
 
               <p className="mt-4 text-sm text-zinc-600 dark:text-zinc-400 max-w-md">
-                Voit kertoa viestissäsi toivotun kuvauspaikan, ajankohdan sekä
-                kuvauksen tyypin (esim. hääkuvaus, perhekuvaus, yrityskuvaus).
+                {t("helper")}
               </p>
             </div>
           </Reveal>
@@ -60,7 +62,6 @@ export default function Contact({ locale }: { locale: string }) {
                 required
               />
 
-              {/* Phone number field */}
               <input
                 type="tel"
                 placeholder={t("phone")}
@@ -70,9 +71,7 @@ export default function Contact({ locale }: { locale: string }) {
 
               {calculatorDetails && (
                 <div className="rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white/5 dark:bg-zinc-800/40 px-4 py-3 text-xs text-zinc-700 dark:text-zinc-200">
-                  <p className="font-semibold mb-1">
-                    Valinnat hinnastolaskurista
-                  </p>
+                  <p className="font-semibold mb-1">{t("fromEstimator")}</p>
                   <pre className="whitespace-pre-wrap leading-relaxed">
                     {calculatorDetails}
                   </pre>

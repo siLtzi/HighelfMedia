@@ -99,27 +99,28 @@ const service = defineType({
         },
       ],
     }),
-
+    
     // portfolioImages: array of images
     defineField({
       name: "portfolioImages",
       title: "Portfolio – kuvat",
       type: "array",
       of: [
-        defineField({
-          name: "portfolioImage",
-          title: "Kuva",
+        {
           type: "image",
           options: { hotspot: true },
           fields: [
-            defineField({
+            {
               name: "alt",
               title: "Alt-teksti",
               type: "string",
-            }),
+            },
           ],
-        }),
+        },
       ],
+      options: {
+        layout: "grid", // 👈 nice grid UI + easy multi-upload
+      },
     }),
   ],
 });

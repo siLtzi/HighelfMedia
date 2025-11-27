@@ -62,7 +62,13 @@ export default function Hero() {
       "
     >
       {/* ==== BACKGROUND WITH OPPOSITE SLIDE + ANTICIPATION ==== */}
-      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+      <div
+  className="
+    pointer-events-none absolute inset-0 -z-10
+    overflow-hidden hero-bg-fade
+  "
+>
+
         {BACKGROUND_PAIRS.map((pair, i) => {
           const isActive = i === activeIndex;
           const isPrev = i === prevIndex;
@@ -126,12 +132,6 @@ export default function Hero() {
               <div
                 className={topClass}
                 style={{ backgroundImage: `url(${pair.top})` }}
-              />
-              <div
-                className="
-          absolute inset-x-0 bottom-0 h-40
-          bg-gradient-to-b from-transparent to-[var(--background)]
-        "
               />
             </div>
           );

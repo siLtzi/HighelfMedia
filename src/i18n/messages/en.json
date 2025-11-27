@@ -14,90 +14,100 @@
   },
   "services": {
     "title": "Services",
-    "subtitle": "Something?",
-    "items": {
-      "web": {
-        "title": "Websites",
-        "desc": "Fast, accessible, SEO-optimized sites."
-      },
-      "shop": {
-        "title": "E-commerce",
-        "desc": "Revenue-driving stores (Shopify/Saleor/Stripe)."
-      },
-      "care": {
-        "title": "Care & Support",
-        "desc": "Updates, analytics, and conversion tracking."
-      }
+    "subtitle": "I capture important moments, stories and spaces – naturally and with care.",
+
+    "labels": {
+      "yrityskuvaus": "Business photography",
+      "haakuvaus": "Wedding photography",
+      "muotokuvaus": "Portraits",
+      "lapsi-ja-perhekuvaus": "Children & family photography",
+      "rippi-ja-valmistujaiskuvaus": "Graduation & confirmation",
+      "asuntokuvaus": "Real estate photography",
+      "hautajaiskuvaus": "Funeral photography",
+      "elainkuvaus": "Pet photography"
     }
   },
-  "work": { "title": "Recent work", "cta": "View more" },
+  "work": { "title": "Pricing", "cta": "View more" },
   "footer": { "copyright": "© {year} Digipaja. All rights reserved." },
   "cta": { "contact": "Get a quote" },
+
   "contact": {
-    "title": "Get in touch",
-    "desc": "Tell me what kind of photoshoot you’re dreaming of – I’ll get back to you as soon as possible.",
+    "title": "Contact",
+    "desc": "Tell me what kind of photo shoot you have in mind – I’ll get back to you as soon as possible.",
     "name": "Name",
     "email": "Email",
     "phone": "Phone number",
     "message": "Message",
-    "submit": "Send"
+    "submit": "Send",
+
+    "helper": "In your message, you can mention the preferred location, date and type of session (e.g. wedding, family, business).",
+    "fromEstimator": "Selections from price calculator"
   },
   "estimator": {
-    "title": "Website Estimator",
-    "badges": {
-      "type": "{type}",
-      "pages": "{count} pages",
-      "deadline": "{deadline}"
-    },
+    "title": "Package price estimate",
+
     "fields": {
-      "type": "Type",
-      "pages": "Pages",
-      "features": "Features",
-      "deadline": "Deadline"
+      "type": "Shoot type",
+      "hours": "Shooting hours",
+      "photos": "Final edited photos"
     },
-    "options": {
-      "type": {
-        "business": "Business",
-        "portfolio": "Portfolio",
-        "ecommerce": "E-commerce",
-        "booking": "Booking system",
-        "custom": "Custom"
+
+    "units": {
+      "hours": "h",
+      "photos": "pcs"
+    },
+
+    "helper": {
+      "baseLine": "Base price: {base} + {hourly}/h",
+      "perPhotoLine": "+ {rate}/photo",
+      "summary": "This calculator helps you understand the ballpark price. Add your selections to the contact form and I’ll send a detailed quote – travel costs and special situations are always agreed separately."
+    },
+
+    "total": {
+      "label": "Estimated price",
+      "approxNote": "Final price will be confirmed in the offer – this is an approximate calculator."
+    },
+
+    "breakdown": {
+      "baseLabel": "Base package",
+      "hoursLabel": "Shooting ({hours} h × {rate}/h)",
+      "photosLabel": "Final photos ({count} pcs × {rate}/pcs)",
+      "extrasLabel": "Extras"
+    },
+
+    "cta": "Add selections to contact form",
+
+    "extras": {
+      "haakuvaus": {
+        "second-photographer": {
+          "label": "Second photographer",
+          "description": "Second shooter for key moments (e.g. ceremony, portraits)"
+        }
       },
-      "features": {
-        "blog": "Blog",
-        "gallery": "Gallery",
-        "contact": "Contact form",
-        "checkout": "Checkout",
-        "booking": "Booking",
-        "multilingual": "Multilingual",
-        "seo": "SEO setup",
-        "cms": "CMS"
-      },
-      "deadline": {
-        "normal": "Normal",
-        "fast": "Fast",
-        "rush": "Rush"
+      "asuntokuvaus": {
+        "aerial": {
+          "label": "Aerial photos (drone)",
+          "description": "Aerial photos of the house and yard"
+        },
+        "floorplan": {
+          "label": "Floor plans",
+          "description": "Clear floor plan for the listing"
+        },
+        "twilight": {
+          "label": "Twilight photos",
+          "description": "Moody photos after sunset"
+        }
       }
     },
-    "helper": {
-      "pagesHint": "First page included, additional pages €40 each",
-      "featuresTip": "Tip: choose only what you truly need — you can always add more later.",
-      "deadlineHint": "Normal = 1x, Fast = 1.2x, Rush = 1.5x"
-    },
-    "breakdown": {
-      "see": "See price breakdown",
-      "base": "Base ({type})",
-      "extraPages": "Extra pages ({count})",
-      "features": "Features {list}",
-      "none": "(none)",
-      "multiplier": "Deadline multiplier"
-    },
-    "total": {
-      "label": "Estimated total",
-      "approxNote": "(approximate — final price depends on project details)"
-    },
-    "cta": "Get a quote"
+
+    "summary": {
+      "type": "Shoot type: {type}",
+      "estimatedPrice": "Estimated price: {price}",
+      "extrasTitle": "Extras:",
+      "extraLine": "- {label} (+{price})"
+    }
   },
+
   "about": {
     "title": "About me",
     "body": "I’m [name], a photographer based in Oulu. I love natural light, genuine moments, and images that feel as good as they look. I work with weddings, families, portraits and businesses – the most important thing is that the final photos feel like you.",

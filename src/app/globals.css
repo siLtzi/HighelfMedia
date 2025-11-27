@@ -1,5 +1,44 @@
 @import "tailwindcss";
 
+
+/* === Global continuous background === */
+
+/* keep fonts/colors from earlier, only override background here */
+body {
+  background:
+    radial-gradient(circle at 0% 0%, rgba(15, 118, 110, 0.28), transparent 55%),
+    radial-gradient(circle at 100% 25%, rgba(129, 140, 248, 0.25), transparent 55%),
+    radial-gradient(circle at 50% 100%, rgba(190, 24, 93, 0.35), transparent 55%),
+    #050509;
+  background-attachment: fixed;
+}
+
+/* optional: keep the grain if you liked it */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.06;
+  background-image: repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.06) 0px,
+      rgba(255, 255, 255, 0.06) 1px,
+      transparent 1px,
+      transparent 2px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.04) 0px,
+      rgba(255, 255, 255, 0.04) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+  mix-blend-mode: soft-light;
+}
+
+
 /* === Base Theme Colors === */
 :root {
   --background: #ffffff;
@@ -24,6 +63,7 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 400;
   letter-spacing: 0;
 }
+
 
 /* === Background Gradients (for light/dark themes) === */
 :root {
@@ -61,28 +101,6 @@ h1, h2, h3, h4, h5, h6 {
   from { transform: scaleX(0); }
   to   { transform: scaleX(1); }
 }
-
-/* === Splash Screen Animations === */
-/*@keyframes splashIn   { from { opacity: 0 } to { opacity: 1 } }
-@keyframes splashOut  { from { opacity: 1 } to { opacity: 0 } }
-.animate-splashIn  { animation: splashIn .20s ease-out forwards; }
-.animate-splashOut { animation: splashOut .28s ease-in forwards; }
-
-/* Splash logo subtle settle (fast) 
-.splash-logo-enter {
-  opacity: 0;
-  transform: translateY(6px) scaleX(1);
-  filter: blur(2px);
-  transform-origin: center;
-  animation: splashLogoIn .65s ease-out .18s forwards;
-}
-@keyframes splashLogoIn {
-  to {
-    opacity: 1;
-    transform: translateY(0) scaleX(1);
-    filter: blur(0);
-  }
-}*/
 
 /* === Hero Logo Settle Animation === */
 .logo-settle {
@@ -233,5 +251,163 @@ h1, h2, h3, h4, h5, h6 {
   transform: translateX(110%);
 }
 
+/* === Global dark nebula + grain === */
+
+body {
+  position: relative;
+  min-height: 100vh;
+}
+
+/* Soft moving “nebula” behind everything */
+body::before {
+  content: "";
+  position: fixed;
+  inset: -40%;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 20% 80%, rgba(129, 140, 248, 0.22), transparent 60%),
+    radial-gradient(circle at 80% 20%, rgba(244, 114, 182, 0.20), transparent 60%),
+    radial-gradient(circle at 10% 10%, rgba(34, 197, 219, 0.18), transparent 55%);
+  filter: blur(70px);
+  opacity: 0.6;
+  animation: nebulaFloat 35s ease-in-out infinite alternate;
+}
+
+/* Very soft film grain on top */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.06;
+  background-image: repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.06) 0px,
+      rgba(255, 255, 255, 0.06) 1px,
+      transparent 1px,
+      transparent 2px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.04) 0px,
+      rgba(255, 255, 255, 0.04) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+  mix-blend-mode: soft-light;
+}
+
+/* Slow movement for the nebula */
+@keyframes nebulaFloat {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  100% {
+    transform: translate3d(-30px, -20px, 0) scale(1.15);
+  }
+}
+
+/* === Section-specific background glows === */
+
+.section-bg {
+  position: relative;
+  isolation: isolate; /* so blur stays behind content */
+  overflow: hidden;
+}
+
+/* common behavior for all section overlays */
+.section-bg::before {
+  content: "";
+  position: absolute;
+  inset: -30%;
+  z-index: -1;
+  pointer-events: none;
+  filter: blur(60px);
+  opacity: 0.7;
+
+  /* ⬇️ fade at top & bottom so sections blend together */
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 18%,
+    black 82%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 18%,
+    black 82%,
+    transparent 100%
+  );
+}
+
+/* Individual flavors now ONLY define the colors */
+.section-bg--hero::before {
+  background:
+    radial-gradient(circle at 20% 0%, rgba(250, 250, 250, 0.12), transparent 55%),
+    radial-gradient(circle at 80% 40%, rgba(129, 140, 248, 0.30), transparent 60%);
+}
+
+.section-bg--about::before {
+  background:
+    radial-gradient(circle at 10% 90%, rgba(52, 211, 153, 0.24), transparent 60%);
+}
+
+.section-bg--services::before {
+  background:
+    radial-gradient(circle at 80% 10%, rgba(56, 189, 248, 0.26), transparent 55%),
+    radial-gradient(circle at 20% 40%, rgba(248, 250, 252, 0.08), transparent 60%);
+}
+
+.section-bg--work::before {
+  background:
+    radial-gradient(circle at 50% 120%, rgba(248, 113, 113, 0.26), transparent 60%);
+}
+
+.section-bg--contact::before {
+  background:
+    radial-gradient(circle at 50% 100%, rgba(250, 204, 21, 0.28), transparent 55%);
+}
 
 
+/* === Hero background fade into page === */
+.hero-bg-fade {
+  /* standard */
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 18%,
+    black 82%,
+    transparent 100%
+  );
+  mask-repeat: no-repeat;
+  mask-size: 100% 100%;
+}
+
+/* Safari / WebKit */
+@supports (-webkit-mask-image: linear-gradient(black, white)) {
+  .hero-bg-fade {
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      black 18%,
+      black 82%,
+      transparent 100%
+    );
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-size: 100% 100%;
+
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      black 18%,
+      black 82%,
+      transparent 100%
+    );
+    mask-repeat: no-repeat;
+    mask-size: 100% 100%;
+  }
+}

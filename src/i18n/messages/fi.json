@@ -13,19 +13,15 @@
   "services": {
     "title": "Palvelut",
     "subtitle": "Kuvaan ihmisille tärkeitä hetkiä, tarinoita ja tiloja – luonnollisesti ja laadukkaasti.",
-    "items": {
-      "web": {
-        "title": "Hääkuvaus",
-        "desc": "Tarinalliset, lämpimät ja aidot kuvat tärkeästä päivästäsi."
-      },
-      "shop": {
-        "title": "Muotokuvaus",
-        "desc": "Henkilökuvat, CV-kuvat, some- ja brändikuvat – juuri sinun tyyliisi."
-      },
-      "care": {
-        "title": "Perhekuvaus",
-        "desc": "Luonnolliset ja rennot kuvat perheestä, lapsista tai vastasyntyneestä."
-      }
+    "labels": {
+      "yrityskuvaus": "Yrityskuvaus",
+      "haakuvaus": "Hääkuvaus",
+      "muotokuvaus": "Muotokuvaus",
+      "lapsi-ja-perhekuvaus": "Lapsi- ja perhekuvaus",
+      "rippi-ja-valmistujaiskuvaus": "Rippi- ja valmistujaiskuvaus",
+      "asuntokuvaus": "Asuntokuvaus",
+      "hautajaiskuvaus": "Hautajaiskuvaus",
+      "elainkuvaus": "Eläinkuvaus"
     }
   },
 
@@ -33,24 +29,7 @@
     "title": "Hinnasto",
     "subtitle": "Rakenna sinulle sopiva kuvauspaketti.",
     "cta": "Lue lisää",
-    "viewCase": "Avaa galleria",
-    "items": {
-      "project1": {
-        "title": "Hääkuvaus",
-        "desc": "Tunnelmalliset ja tarinalliset dokumentaariset hääkuvat.",
-        "tags": ["Häät", "Dokumentaarinen"]
-      },
-      "project2": {
-        "title": "Muotokuvaus",
-        "desc": "Luonnolliset ja tyylikkäät muotokuvat sisällä tai ulkona.",
-        "tags": ["Muotokuvat", "Studiovalo"]
-      },
-      "project3": {
-        "title": "Perhekuvaus",
-        "desc": "Rennot ja lämpimät perhekuvat — aitoja hetkiä ja hymyjä.",
-        "tags": ["Perhe", "Lifestyle"]
-      }
-    }
+    "viewCase": "Avaa galleria"
   },
 
   "footer": {
@@ -68,64 +47,78 @@
     "email": "Sähköposti",
     "phone": "Puhelinnumero",
     "message": "Viesti",
-    "submit": "Lähetä"
+    "submit": "Lähetä",
+    "helper": "Voit kertoa viestissäsi toivotun kuvauspaikan, ajankohdan sekä kuvauksen tyypin (esim. hääkuvaus, perhekuvaus, yrityskuvaus).",
+    "fromEstimator": "Valinnat hinnastolaskurista"
   },
 
   "estimator": {
     "title": "Kuvauspaketin hinta",
-    "badges": {
-      "type": "{type}",
-      "pages": "{count} kuvaa",
-      "deadline": "{deadline}"
-    },
+
     "fields": {
       "type": "Kuvaustyyppi",
-      "pages": "Kuvien määrä",
-      "features": "Lisäpalvelut",
-      "deadline": "Ajankohta"
+      "hours": "Kuvaustunnit",
+      "photos": "Valmiit kuvat (editoinnin jälkeen)"
     },
-    "options": {
-      "type": {
-        "business": "Yrityskuvaus",
-        "portfolio": "Muotokuvaus",
-        "ecommerce": "Perhekuvaus",
-        "booking": "Hääkuvaus",
-        "custom": "Muu kuvaus"
+
+    "units": {
+      "hours": "h",
+      "photos": "kpl"
+    },
+
+    "helper": {
+      "baseLine": "Perushinta: {base} + {hourly}/h",
+      "perPhotoLine": "+ {rate}/kuva",
+      "summary": "Laskuri auttaa hahmottamaan suuruusluokan. Kirjoita valinnat yhteydenottolomakkeeseen, niin teen tarkan tarjouksen – matkakulut ja erityistilanteet sovitaan aina erikseen."
+    },
+
+    "total": {
+      "label": "Arvioitu hinta",
+      "approxNote": "Lopullinen hinta tarkentuu tarjouksessa – tämä on suuntaa-antava laskuri."
+    },
+
+    "breakdown": {
+      "baseLabel": "Peruspaketti",
+      "hoursLabel": "Kuvaus ({hours} h × {rate}/h)",
+      "photosLabel": "Valmiit kuvat ({count} kpl × {rate}/kpl)",
+      "extrasLabel": "Lisäpalvelut"
+    },
+
+    "cta": "Lisää valinnat yhteydenottolomakkeelle",
+
+    "extras": {
+      "haakuvaus": {
+        "second-photographer": {
+          "label": "Lisäkuvaaja",
+          "description": "Toinen kuvaaja tärkeimpiin hetkiin (esim. vihkiminen, potretit)"
+        },
+        "aerial": {
+          "label": "Ilmakuvat (drone)",
+          "description": "Ilmakuvaus juhlapaikasta ja ympäristöstä"
+        }
       },
-      "features": {
-        "blog": "Kevyt editointi",
-        "gallery": "Laaja editointi",
-        "contact": "Lisäkuvat",
-        "checkout": "Jälkikäsittelypaketti",
-        "booking": "Pikakäsittely",
-        "multilingual": "Koko gallerian värikorjaus",
-        "seo": "Vedokset",
-        "cms": "Tulosteet / albumi"
-      },
-      "deadline": {
-        "normal": "Normaali aikataulu",
-        "fast": "Nopeutettu",
-        "rush": "Pikatoimitus"
+      "asuntokuvaus": {
+        "aerial": {
+          "label": "Ilmakuvat (drone)",
+          "description": "Ilmakuvaus talosta ja pihapiiristä"
+        },
+        "floorplan": {
+          "label": "Pohjakuvat",
+          "description": "Selkeä pohjakuva ilmoitusta varten"
+        },
+        "twilight": {
+          "label": "Iltakuvat / twilight-kuvaus",
+          "description": "Tunnelmalliset kuvat auringonlaskun jälkeen"
+        }
       }
     },
-    "helper": {
-      "pagesHint": "Kuvien määrää voi muuttaa tilanteen mukaan.",
-      "featuresTip": "Lisäpalvelut ovat vapaaehtoisia.",
-      "deadlineHint": "Pikatoimituksella kuvat valmiina nopeammin."
-    },
-    "breakdown": {
-      "see": "Näytä erittely",
-      "base": "Perushinta ({type})",
-      "extraPages": "Kuvamäärä ({count})",
-      "features": "Lisäpalvelut {list}",
-      "none": "(ei valittuna)",
-      "multiplier": "Ajankohdan vaikutus"
-    },
-    "total": {
-      "label": "Lopullinen hinta",
-      "approxNote": ""
-    },
-    "cta": "Varaa kuvaus"
+
+    "summary": {
+      "type": "Kuvaustyyppi: {type}",
+      "estimatedPrice": "Arvioitu hinta: {price}",
+      "extrasTitle": "Lisäpalvelut:",
+      "extraLine": "- {label} (+{price})"
+    }
   },
 
   "about": {

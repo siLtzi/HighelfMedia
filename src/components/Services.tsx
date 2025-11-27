@@ -4,12 +4,13 @@ import { useEffect, useRef, useState } from "react";
 import Container from "./Container";
 import Reveal from "./Reveal";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 type CardProps = {
   title: string;
   align: "left" | "right";
   image: string;
-  backgroundPosition?: string; // 👈 NEW
+  backgroundPosition?: string;
 };
 
 function Card({ title, align, image, backgroundPosition }: CardProps) {
@@ -36,7 +37,7 @@ function Card({ title, align, image, backgroundPosition }: CardProps) {
           "
           style={{
             backgroundImage: `url(${image})`,
-            backgroundPosition: backgroundPosition ?? "50% 50%",
+            backgroundPosition: backgroundPosition ?? "50% 50%"
           }}
         />
       </div>
@@ -46,7 +47,7 @@ function Card({ title, align, image, backgroundPosition }: CardProps) {
         <div
           className={`
             w-full px-4 py-3
-            bg-gradient-to-t from-black/85 via-black/40 to-transparent
+            bg-linear-to-t from-black/85 via-black/40 to-transparent
             text-white
             ${isLeft ? "text-left" : "text-right"}
           `}
@@ -73,10 +74,10 @@ function Card({ title, align, image, backgroundPosition }: CardProps) {
               w-[280px] sm:w-[340px] lg:w-[400px]
               ${isLeft ? "justify-start text-left" : "justify-end text-right"}
               ${
-  isLeft
-    ? "[clip-path:polygon(0_0,100%_0,92%_100%,0_100%)]"
-    : "[clip-path:polygon(8%_0,100%_0,100%_100%,0_100%)]"
-}
+                isLeft
+                  ? "[clip-path:polygon(0_0,100%_0,92%_100%,0_100%)]"
+                  : "[clip-path:polygon(8%_0,100%_0,100%_100%,0_100%)]"
+              }
             `}
           >
             <span className="text-base sm:text-lg lg:text-3xl tracking-tight drop-shadow-[0_0_6px_rgba(0,0,0,0.8)]">
@@ -91,9 +92,61 @@ function Card({ title, align, image, backgroundPosition }: CardProps) {
 
 /* === Services Section === */
 
-export default function Services({ locale }: { locale: "fi" | "en" }) {
+type Locale = "fi" | "en";
+
+type ServiceItem = {
+  slug: string;
+  image: string;
+  backgroundPosition?: string;
+};
+
+const items: ServiceItem[] = [
+  {
+    slug: "yrityskuvaus",
+    image: "/services/yritys.png",
+    backgroundPosition: "50% 90%"
+  },
+  {
+    slug: "haakuvaus",
+    image: "/services/haat.png",
+    backgroundPosition: "50% 20%"
+  },
+  {
+    slug: "muotokuvaus",
+    image: "/services/muotokuva.png",
+    backgroundPosition: "50% 30%"
+  },
+  {
+    slug: "lapsi-ja-perhekuvaus",
+    image: "/services/perhe.png",
+    backgroundPosition: "50% 22%"
+  },
+  {
+    slug: "rippi-ja-valmistujaiskuvaus",
+    image: "/services/rippi.png",
+    backgroundPosition: "50% 18%"
+  },
+  {
+    slug: "asuntokuvaus",
+    image: "/services/asunto.png",
+    backgroundPosition: "50% 55%"
+  },
+  {
+    slug: "hautajaiskuvaus",
+    image: "/services/hautaus.png",
+    backgroundPosition: "50% 57%"
+  },
+  {
+    slug: "elainkuvaus",
+    image: "/services/elain.png"
+  }
+];
+
+export default function Services({ locale }: { locale: Locale }) {
   const sectionRef = useRef<HTMLElement | null>(null);
   const [triggered, setTriggered] = useState(false);
+
+  const t = useTranslations("services");
 
   useEffect(() => {
     const el = sectionRef.current;
@@ -113,71 +166,22 @@ export default function Services({ locale }: { locale: "fi" | "en" }) {
     return () => observer.disconnect();
   }, []);
 
-  // title + slug for each service (slug = url)
-  const items = [
-    {
-      title: "Yrityskuvaus",
-      slug: "yrityskuvaus",
-      image: "/services/yritys.png",
-      backgroundPosition: "50% 90%",
-    },
-    {
-      title: "Hääkuvaus",
-      slug: "haakuvaus",
-      image: "/services/haat.png",
-      backgroundPosition: "50% 20%",
-    },
-    {
-      title: "Muotokuvaus",
-      slug: "muotokuvaus",
-      image: "/services/muotokuva.png",
-      backgroundPosition: "50% 30%", // a bit higher
-    },
-    {
-      title: "Lapsi- ja perhekuvaus",
-      slug: "lapsi-ja-perhekuvaus",
-      image: "/services/perhe.png",
-      backgroundPosition: "50% 22%", // show faces nicely
-    },
-    {
-      title: "Rippi- ja valmistujaiskuvaus",
-      slug: "rippi-ja-valmistujaiskuvaus",
-      image: "/services/rippi.png",
-      backgroundPosition: "50% 18%", // cap + face
-    },
-    {
-      title: "Asuntokuvaus",
-      slug: "asuntokuvaus",
-      image: "/services/asunto.png",
-      backgroundPosition: "50% 55%",
-    },
-    {
-      title: "Hautajaiskuvaus",
-      slug: "hautajaiskuvaus",
-      image: "/services/hautaus.png",
-      backgroundPosition: "50% 57%",
-    },
-    {
-      title: "Eläinkuvaus",
-      slug: "elainkuvaus",
-      image: "/services/elain.png",
-    },
-  ];
-
   return (
     <section
-      id="services"
-      ref={sectionRef}
-      className="relative min-h-screen flex items-center justify-center py-24 text-center"
-    >
+  id="services"
+  ref={sectionRef}
+  className="
+    relative min-h-screen flex items-center justify-center py-24 text-center
+  "
+>
       <Container>
         <Reveal>
           <div className="flex flex-col items-center">
             <h2 className="mt-2 text-3xl sm:text-4xl font-semibold tracking-tight">
-              Palvelut
+              {t("title")}
             </h2>
             <p className="mt-3 max-w-xl text-sm text-zinc-600 dark:text-zinc-400">
-              Valokuvauspalvelut kaikkiin elämäsi hetkiin.
+              {t("subtitle")}
             </p>
           </div>
         </Reveal>
@@ -197,25 +201,25 @@ export default function Services({ locale }: { locale: "fi" | "en" }) {
               <div
                 key={item.slug}
                 className={`
-        w-full flex
-        ${fromLeft ? "justify-start" : "justify-end"}
-        transition-[transform,opacity] duration-500 ease-out
-        ${triggered ? shown : hidden}
-      `}
+                  w-full flex
+                  ${fromLeft ? "justify-start" : "justify-end"}
+                  transition-[transform,opacity] duration-500 ease-out
+                  ${triggered ? shown : hidden}
+                `}
                 style={{
-                  transitionDelay: triggered ? `${i * 120}ms` : "0ms",
+                  transitionDelay: triggered ? `${i * 120}ms` : "0ms"
                 }}
               >
                 <Link
                   href={`/${locale}/${item.slug}`}
                   className="
-    w-[78%] md:w-[70%]
-    hover:w-full
-    transition-[width] duration-200 ease-out
-  "
+                    w-[78%] md:w-[70%]
+                    hover:w-full
+                    transition-[width] duration-200 ease-out
+                  "
                 >
                   <Card
-                    title={item.title}
+                    title={t(`labels.${item.slug}`)}
                     align={fromLeft ? "left" : "right"}
                     image={item.image}
                     backgroundPosition={item.backgroundPosition}

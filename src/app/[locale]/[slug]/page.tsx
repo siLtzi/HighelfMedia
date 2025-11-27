@@ -3,7 +3,11 @@ import type { Metadata } from "next";
 import Container from "@/components/Container";
 import Reveal from "@/components/Reveal";
 import { client } from "@/sanity/lib/client";
-import { allServiceSlugsQuery, serviceBySlugQuery } from "@/sanity/lib/queries";
+import {
+  allServiceSlugsQuery,
+  serviceBySlugQuery,
+  getPricingConfig,
+} from "@/sanity/lib/queries";
 import ServicePortfolioGrid from "./ServicePortfolioGrid";
 import PhotoCalculator from "@/components/PhotoCalculator";
 import Contact from "@/components/Contact";
@@ -29,19 +33,24 @@ type Service = {
 export async function generateStaticParams() {
   const services: { slug: string }[] = await client.fetch(allServiceSlugsQuery);
 
-  return services.map((service) => ({
-    slug: service.slug,
-  }));
+  const locales = ["fi", "en"]; // add/remove locales you support
+
+  return locales.flatMap((locale) =>
+    services.map((service) => ({
+      locale,
+      slug: service.slug,
+    }))
+  );
 }
 
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: ServiceSlug };
+  params: Promise<{ slug: ServiceSlug; locale: string }>;
 }): Promise<Metadata> {
-  const { slug } = params;
-  const service: Service | null = await client.fetch(serviceBySlugQuery(slug));
+  const { slug } = await params; // 👈 IMPORTANT
 
+  const service: Service | null = await client.fetch(serviceBySlugQuery(slug));
   if (!service) return {};
 
   return {
@@ -55,11 +64,12 @@ export default async function ServicePage({
 }: {
   params: Promise<{ locale: string; slug: ServiceSlug }>;
 }) {
-  const { slug, locale } = await params;
+  const { slug, locale } = await params; // 👈 IMPORTANT
 
   const service: Service | null = await client.fetch(serviceBySlugQuery(slug));
-
   if (!service) notFound();
+
+  const pricing = await getPricingConfig(); // 👈 from Sanity
 
   return (
     <section className="py-20">
@@ -96,7 +106,9 @@ export default async function ServicePage({
             {service.howItWorks && service.howItWorks.length > 0 && (
               <Reveal delay={0.08} y={20}>
                 <section className="rounded-2xl border border-zinc-200/70 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80 backdrop-blur p-6 sm:p-8">
-                  <h2 className="text-lg font-semibold">Miten kuvaus etenee</h2>
+                  <h2 className="text-lg font-semibold">
+                    Miten kuvaus etenee
+                  </h2>
                   <ol className="mt-4 space-y-3 text-sm text-zinc-600 dark:text-zinc-400">
                     {service.howItWorks.map((step, index) => (
                       <li key={step.title ?? index} className="flex gap-3">
@@ -107,7 +119,9 @@ export default async function ServicePage({
                           <p className="font-medium text-zinc-900 dark:text-zinc-100">
                             {step.title}
                           </p>
-                          <p className="text-xs sm:text-sm mt-1">{step.desc}</p>
+                          <p className="text-xs sm:text-sm mt-1">
+                            {step.desc}
+                          </p>
                         </div>
                       </li>
                     ))}
@@ -147,7 +161,9 @@ export default async function ServicePage({
 
               {service.faq && service.faq.length > 0 && (
                 <div className="mt-6 border-t border-zinc-200/70 dark:border-zinc-800 pt-4">
-                  <h3 className="text-sm font-semibold mb-2">Usein kysyttyä</h3>
+                  <h3 className="text-sm font-semibold mb-2">
+                    Usein kysyttyä
+                  </h3>
                   <dl className="space-y-3 text-xs text-zinc-600 dark:text-zinc-400">
                     {service.faq.map((item, index) => (
                       <div key={item.q ?? index}>
@@ -169,7 +185,11 @@ export default async function ServicePage({
       <div id="work">
         <Container>
           <Reveal delay={0.08} y={20}>
-            <PhotoCalculator serviceSlug={service.slug} lockToService />
+            <PhotoCalculator
+              serviceSlug={service.slug}
+              lockToService
+              pricing={pricing}
+            />
           </Reveal>
         </Container>
       </div>
