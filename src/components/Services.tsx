@@ -1,10 +1,14 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef } from "react";
+import gsap from "gsap";
+import ScrollTrigger from "gsap/ScrollTrigger";
 import Container from "./Container";
 import Reveal from "./Reveal";
 import Link from "next/link";
-import { useTranslations, useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
+
+gsap.registerPlugin(ScrollTrigger);
 
 type CardProps = {
   title: string;
@@ -37,7 +41,7 @@ function Card({ title, align, image, backgroundPosition }: CardProps) {
           "
           style={{
             backgroundImage: `url(${image})`,
-            backgroundPosition: backgroundPosition ?? "50% 50%"
+            backgroundPosition: backgroundPosition ?? "50% 50%",
           }}
         />
       </div>
@@ -104,76 +108,89 @@ const items: ServiceItem[] = [
   {
     slug: "yrityskuvaus",
     image: "/services/yritys.png",
-    backgroundPosition: "50% 90%"
+    backgroundPosition: "50% 90%",
   },
   {
     slug: "haakuvaus",
     image: "/services/haat.png",
-    backgroundPosition: "50% 20%"
+    backgroundPosition: "50% 20%",
   },
   {
     slug: "muotokuvaus",
     image: "/services/muotokuva.png",
-    backgroundPosition: "50% 30%"
+    backgroundPosition: "50% 30%",
   },
   {
     slug: "lapsi-ja-perhekuvaus",
     image: "/services/perhe.png",
-    backgroundPosition: "50% 22%"
+    backgroundPosition: "50% 22%",
   },
   {
     slug: "rippi-ja-valmistujaiskuvaus",
     image: "/services/rippi.png",
-    backgroundPosition: "50% 18%"
+    backgroundPosition: "50% 18%",
   },
   {
     slug: "asuntokuvaus",
     image: "/services/asunto.png",
-    backgroundPosition: "50% 55%"
+    backgroundPosition: "50% 55%",
   },
   {
     slug: "hautajaiskuvaus",
     image: "/services/hautaus.png",
-    backgroundPosition: "50% 57%"
+    backgroundPosition: "50% 57%",
   },
   {
     slug: "elainkuvaus",
-    image: "/services/elain.png"
-  }
+    image: "/services/elain.png",
+  },
 ];
 
 export default function Services({ locale }: { locale: Locale }) {
-  const sectionRef = useRef<HTMLElement | null>(null);
-  const [triggered, setTriggered] = useState(false);
-
   const t = useTranslations("services");
+  const listRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    const el = sectionRef.current;
-    if (!el) return;
+  useLayoutEffect(() => {
+    if (!listRef.current) return;
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setTriggered(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.35 }
-    );
+    const ctx = gsap.context(() => {
+      const rows = gsap.utils.toArray<HTMLDivElement>(".service-row");
 
-    observer.observe(el);
-    return () => observer.disconnect();
+      rows.forEach((row, index) => {
+        const fromLeft = row.dataset.align === "left";
+
+        gsap.fromTo(
+          row,
+          {
+            opacity: 0,
+            x: fromLeft ? -64 : 64, // 64px offset
+          },
+          {
+            opacity: 1,
+            x: 0,
+            duration: 0.7,
+            ease: "power3.out",
+            delay: index * 0.06,
+            scrollTrigger: {
+              trigger: row,
+              start: "top 80%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+      });
+    }, listRef);
+
+    return () => ctx.revert();
   }, []);
 
   return (
     <section
-  id="services"
-  ref={sectionRef}
-  className="
-    relative min-h-screen flex items-center justify-center py-24 text-center
-  "
->
+      id="services"
+      className="
+        relative min-h-screen flex items-center justify-center py-24 text-center
+      "
+    >
       <Container>
         <Reveal>
           <div className="flex flex-col items-center">
@@ -187,28 +204,22 @@ export default function Services({ locale }: { locale: Locale }) {
         </Reveal>
 
         {/* Staggered rows */}
-        <div className="mt-16 flex flex-col gap-2 w-full mx-auto pb-8">
+        <div
+          ref={listRef}
+          className="mt-16 flex flex-col gap-2 w-full mx-auto pb-8"
+        >
           {items.map((item, i) => {
             const fromLeft = i % 2 === 0;
-
-            const hidden = fromLeft
-              ? "-translate-x-16 opacity-0"
-              : "translate-x-16 opacity-0";
-
-            const shown = "translate-x-0 opacity-100";
 
             return (
               <div
                 key={item.slug}
                 className={`
+                  service-row
                   w-full flex
                   ${fromLeft ? "justify-start" : "justify-end"}
-                  transition-[transform,opacity] duration-500 ease-out
-                  ${triggered ? shown : hidden}
                 `}
-                style={{
-                  transitionDelay: triggered ? `${i * 120}ms` : "0ms"
-                }}
+                data-align={fromLeft ? "left" : "right"}
               >
                 <Link
                   href={`/${locale}/${item.slug}`}
