@@ -15,7 +15,7 @@ interface SelectedWorksProps {
     settings: {
       title: string;
       subtitle: string;
-    } | null; // <--- settings might be null if not published yet
+    } | null; 
     list: SanityProject[];
   } | null;
 }
@@ -31,17 +31,19 @@ export default function SelectedWorks({ data }: SelectedWorksProps) {
     title: project.title,
     category: project.category,
     imageUrl: project.imageUrl,
-    link: `/work/${project.slug}`,
+    // ✅ CHANGED: Links to root service page (e.g., /haakuvaus)
+    // instead of /work/haakuvaus, fitting your new site structure.
+    link: `/${project.slug}`,
   }));
 
   // SAFETY CHECK: Use fallbacks if settings haven't been created in Sanity yet
-  const sectionTitle = data.settings?.title || "Selected Works";
-  const sectionSubtitle = data.settings?.subtitle || "";
+  const sectionTitle = data.settings?.title || t('title');
 
   return (
     <SelectedWorksContent 
       title={sectionTitle}
-      viewCaseLabel={t('viewCase')}
+      // ❌ REMOVED: viewCaseLabel={t('viewCase')} 
+      // This was causing the error because the child component no longer needs it.
       projects={formattedProjects}
     />
   );
