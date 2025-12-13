@@ -1,13 +1,27 @@
 import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
 
-// If you also use Sentry, see the note below about composing plugins.
 const withNextIntl = createNextIntlPlugin();
 
 const nextConfig: NextConfig = {
-  experimental: {
+  images: {
+    remotePatterns: [
+      // 1. Keep Sanity (for your future real projects)
+      {
+        protocol: 'https',
+        hostname: 'cdn.sanity.io',
+      },
+      // 2. ADD Unsplash (for the placeholders we are using now)
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+    ],
   },
-  reactCompiler: true
+  
+  experimental: {
+    // Add experimental features here if needed
+  },
 };
 
 export default withNextIntl(nextConfig);

@@ -124,5 +124,40 @@
     "title": "Tietoa minusta",
     "body": "Olen [nimi], oululainen valokuvaaja. Rakastan luonnollista valoa, aitoja hetkiä ja kuvia, jotka kestävät aikaa. Kuvaan häitä, perheitä, muotokuvia ja yrityksiä — aina asiakkaan tarina edellä.",
     "portraitAlt": "Valokuvaajan muotokuva"
+  },
+  
+  "Navigation": {
+    "work": "Valitut Työt",
+    "services": "Palvelut",
+    "about": "Valokuvaaja",
+    "contact": "Yhteystiedot",
+    "letsTalk": "Ota Yhteyttä"
+  },
+  "Manifesto": {
+    "heading": "Visio",
+    "statement": "En vain tallenna todellisuutta. Minä rakennan sen. Jokainen ruutu on päätös. Jokainen varjo on tarina."
+  },
+  "SelectedWorks": {
+    "title": "Valitut Työt",
+    "viewCase": "Katso Projekti"
+  },
+  "Profile": {
+    "heading": "Tekijä",
+    "name": "Oma Nimesi",
+    "bio": "En vain ota kuvia; rakennan visuaalisia perintöjä. Taustani [Tausta] tuo jokaiseen kuvaukseen elokuvallista tarkkuutta. Studioni liikkuu, vision on ehdoton.",
+    "stats": [
+      { "label": "Vuotta Alalla", "value": "10+" },
+      { "label": "Projektia", "value": "150+" }
+    ]
+  },
+  "Footer": {
+    "locationLabel": "Sijainti",
+    "timeLabel": "Paikallinen aika",
+    "socialsLabel": "Sosiaalinen media",
+    "menuLabel": "Valikko",
+    "ctaDefault": "Onko sinulla visio? Rakennetaan tarina yhdessä.",
+    "buttonDefault": "Aloita projekti",
+    "rights": "© {year} Highelf. Kaikki oikeudet pidätetään."
   }
+
 }

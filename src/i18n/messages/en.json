@@ -32,7 +32,7 @@
     "subtitle": "Build a photo package that suits you."
   },
 
-    "footer": {
+  "footer": {
     "instagram": "Highelf Media",
     "copyright": "© {year} Highelf Media. Kaikki oikeudet pidätetään."
   },
@@ -118,5 +118,39 @@
     "title": "About me",
     "body": "I’m [name], a photographer based in Oulu. I love natural light, genuine moments, and images that feel as good as they look. I work with weddings, families, portraits and businesses – the most important thing is that the final photos feel like you.",
     "portraitAlt": "Portrait of photographer [name]"
+  },
+
+  "Navigation": {
+    "work": "Selected Work",
+    "services": "Services",
+    "about": "The Photographer",
+    "contact": "Contact",
+    "letsTalk": "Let's Talk"
+  },
+  "Manifesto": {
+    "heading": "The Vision",
+    "statement": "I do not capture reality. I construct it. Every frame is a decision. Every shadow is a story."
+  },
+  "SelectedWorks": {
+    "title": "Selected Works",
+    "viewCase": "View Case"
+  },
+  "Profile": {
+    "heading": "The Architect",
+    "name": "Your Name",
+    "bio": "I don't just take photos; I build visual legacies. With a background in [Your Background], I bring a cinematic precision to every shoot. My studio is mobile, my vision is absolute.",
+    "stats": [
+      { "label": "Years Active", "value": "10+" },
+      { "label": "Projects", "value": "150+" }
+    ]
+  },
+  "Footer": {
+    "locationLabel": "Location",
+    "timeLabel": "Local Time",
+    "socialsLabel": "Socials",
+    "menuLabel": "Menu",
+    "ctaDefault": "Have a vision? Let's build a story together.",
+    "buttonDefault": "Start a project",
+    "rights": "© {year} Highelf. All rights reserved."
   }
 }

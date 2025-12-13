@@ -1,12 +1,16 @@
-import { type SchemaTypeDefinition } from "sanity";
-import service from "./service";
-import pricingCalculator from "./pricingCalculator";
-import heroSettings from "./heroSettings";
+import { type SchemaTypeDefinition } from 'sanity'
 
-export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [
-    service,
-    pricingCalculator,
-    heroSettings,
-  ],
-};
+// Check your files: These must use 'export const', NOT 'export default'
+import { heroSettings } from "./heroSettings";
+import { manifestoSettings } from "./manifestoSettings";
+import { projectsSettings } from "./projectsSettings";
+import { profileSettings } from "./profileSettings";
+import { footerSettings } from "./footerSettings";
+
+export const schemaTypes: SchemaTypeDefinition[] = [
+  heroSettings,
+  manifestoSettings,
+  projectsSettings,
+  profileSettings,
+  footerSettings,
+];

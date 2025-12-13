@@ -1,48 +1,118 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { sanityFetch } from "@/sanity/lib/client";
+import { defineQuery } from "next-sanity";
+import { homePageQuery } from "@/sanity/queries";
+
+// Components
 import Hero from "@/components/Hero";
-import Services from "@/components/Services";
-import Work from "@/components/Work";
-import Contact from "@/components/Contact";
-import About from "@/components/About";
+import Manifesto from "@/components/Manifesto";
+import SelectedWorks from "@/components/SelectedWorks";
+import Profile from "@/components/Profile";
 
-import {
-  getPricingConfig,
-  getHeroBackgroundPairs,
-  type HeroBackgroundFromSanity,
-} from "@/sanity/lib/queries";
-import { urlForImage } from "@/sanity/lib/image";
+// --- TYPES (This fixes the "Property does not exist" errors) ---
+interface MetadataResponse {
+  title: string;
+  description: string;
+  image: string;
+}
 
+interface HomePageData {
+  hero: any; // We will type these strictly in the components
+  manifesto: {
+    title: string;
+    description: string;
+    imageUrl: string;
+    imageAlt: string;
+  };
+  projects: {
+    settings: { title: string; subtitle: string };
+    list: any[];
+  };
+  profiles: {
+    settings: { title: string; subtitle: string };
+    list: any[];
+  };
+}
+
+// -----------------------------------------------------------------------------
+// 1. Static Generation
+// -----------------------------------------------------------------------------
+export async function generateStaticParams() {
+  return [{ locale: "en" }, { locale: "fi" }];
+}
+
+// -----------------------------------------------------------------------------
+// 2. SEO Metadata
+// -----------------------------------------------------------------------------
+const METADATA_QUERY = defineQuery(`
+  *[_type == "heroSettings"][0] {
+    "title": title[$locale],
+    "description": subtitle[$locale],
+    "image": backgroundImage.asset->url
+  }
+`);
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+
+  // <MetadataResponse> tells TS what this query returns
+  const seo = await sanityFetch<MetadataResponse>({
+    query: METADATA_QUERY,
+    params: { locale },
+  });
+
+  if (!seo) return {};
+
+  return {
+    title: `${seo.title} | Portfolio`,
+    description: seo.description,
+    openGraph: {
+      images: seo.image ? [seo.image] : [],
+    },
+  };
+}
+
+// -----------------------------------------------------------------------------
+// 3. The Page Component
+// -----------------------------------------------------------------------------
 export default async function Page({
   params,
 }: {
-  params: { locale?: string };
+  params: Promise<{ locale: string }>;
 }) {
-  const rawLocale = params?.locale;
-  const locale: "fi" | "en" =
-    rawLocale === "en" || rawLocale === "fi" ? rawLocale : "fi";
+  const { locale } = await params;
 
-  // Fetch pricing + hero backgrounds in parallel
-  const [pricing, rawHeroPairs] = await Promise.all([
-    getPricingConfig(),
-    getHeroBackgroundPairs(),
-  ]);
+  const validLocales = ["en", "fi"];
+  if (!validLocales.includes(locale)) {
+    notFound();
+  }
 
-  const heroPairs =
-    rawHeroPairs && rawHeroPairs.length > 0
-      ? rawHeroPairs
-          .filter((p) => p.top && p.bottom)
-          .map((p) => ({
-            top: urlForImage(p.top).width(1920).height(1080).url(),
-            bottom: urlForImage(p.bottom).width(1920).height(1080).url(),
-          }))
-      : undefined;
+  // <HomePageData> tells TS that 'data' has hero, manifesto, etc.
+  const data = await sanityFetch<HomePageData>({
+    query: homePageQuery,
+    params: { locale },
+  });
+
+  if (!data) return null;
 
   return (
-    <>
-      <Hero backgroundPairs={heroPairs} />
-      <About />
-      <Services locale={locale} />
-      <Work locale={locale} pricing={pricing} />
-      <Contact locale={locale} />
-    </>
+    <main className="flex flex-col min-h-screen bg-neutral-950">
+      {/* 1. HERO */}
+      <Hero locale={locale} data={data.hero} />
+
+      {/* 2. MANIFESTO */}
+      <Manifesto data={data.manifesto} />
+
+      {/* 3. SELECTED WORKS */}
+      <SelectedWorks data={data.projects} />
+
+      {/* 4. PROFILE */}
+      <Profile data={data.profiles.settings} />
+    </main>
   );
 }
