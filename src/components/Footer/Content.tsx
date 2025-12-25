@@ -14,6 +14,7 @@ interface SocialLink {
 }
 
 interface FooterContentProps {
+  locale: string; // 1. ADD THIS
   email: string;
   phone: string;
   location: string;
@@ -30,6 +31,7 @@ interface FooterContentProps {
 }
 
 export default function FooterContent({ 
+  locale, // 2. RECEIVE IT HERE
   email, 
   phone, 
   location, 
@@ -45,7 +47,6 @@ export default function FooterContent({
   useEffect(() => {
     const updateTime = () => {
       const now = new Date();
-      // Oulu is UTC+2 (EET) or UTC+3 (EEST)
       const options: Intl.DateTimeFormatOptions = {
         timeZone: 'Europe/Helsinki',
         hour: '2-digit',
@@ -95,7 +96,6 @@ export default function FooterContent({
     >
       {/* --- TOP SECTION: HEADLINE --- */}
       <div className="relative w-full">
-        {/* Animated Divider */}
         <div className="footer-line w-full h-[1px] bg-white/20 mb-12 md:mb-16" />
 
         <div className="flex flex-col md:flex-row justify-between items-start gap-12">
@@ -112,14 +112,13 @@ export default function FooterContent({
           {/* CTA Button - REDESIGNED */}
           <div className="footer-reveal">
              <Link 
-               href="/contact"
-               // CHANGED: No rounded corners, sharp border, monochrome fill on hover
+               // 3. USE IT HERE: Dynamic Locale Link
+               href={`/${locale}/contact`}
                className="group inline-flex items-center gap-3 border border-white/30 px-8 py-4 hover:bg-white hover:border-white transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]"
              >
                 <span className="uppercase tracking-widest text-xs font-bold text-white group-hover:text-neutral-950 transition-colors duration-500">
                   {startProjectLabel}
                 </span>
-                {/* Simple Arrow Icon */}
                 <svg 
                   width="14" 
                   height="14" 
@@ -141,12 +140,9 @@ export default function FooterContent({
           href={`mailto:${email}`} 
           className="group relative inline-block z-10"
         >
-          {/* Single line elegant typography */}
           <span className="footer-reveal block text-[8vw] md:text-[6vw] font-bold tracking-tighter text-neutral-500 group-hover:text-white transition-colors duration-500 ease-out">
             {email}
           </span>
-          
-          {/* Underline effect on hover */}
           <span className="absolute left-0 bottom-2 w-full h-[2px] bg-white scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] origin-left" />
         </a>
       </div>
@@ -166,7 +162,7 @@ export default function FooterContent({
            <p className="text-neutral-200 font-mono">{time} (EET)</p>
         </div>
 
-        {/* Column 3: Socials (Now with Arrows) */}
+        {/* Column 3: Socials */}
         <div className="footer-reveal flex flex-col gap-2">
            <span className="text-xs font-mono uppercase text-neutral-500 tracking-widest mb-1">{uiLabels.socials}</span>
            <div className="flex flex-col gap-1">
@@ -179,7 +175,6 @@ export default function FooterContent({
                  className="group flex items-center gap-2 text-neutral-400 hover:text-white transition-colors"
                >
                  <span>{social.label}</span>
-                 {/* Diagonal Arrow Reveal */}
                  <svg 
                     width="10" 
                     height="10" 
@@ -199,16 +194,18 @@ export default function FooterContent({
         <div className="footer-reveal flex flex-col gap-2 md:items-end">
            <span className="text-xs font-mono uppercase text-neutral-500 tracking-widest mb-1">{uiLabels.menu}</span>
            <div className="flex flex-col gap-1 md:items-end">
-             <Link href="/haakuvaus" className="text-neutral-400 hover:text-white transition-colors">Hääkuvaus</Link>
-             <Link href="/muotokuvat" className="text-neutral-400 hover:text-white transition-colors">Muotokuvat</Link>
-             <Link href="/info" className="text-neutral-400 hover:text-white transition-colors">Info</Link>
+             {/* NOTE: Ideally these should also use `/${locale}/haakuvaus` if they are pages.
+                If they are sections on the home page (like #work), keep them as is.
+             */}
+             <Link href={`/${locale}/haakuvaus`} className="text-neutral-400 hover:text-white transition-colors">Hääkuvaus</Link>
+             <Link href={`/${locale}/muotokuvat`} className="text-neutral-400 hover:text-white transition-colors">Muotokuvat</Link>
+             <Link href={`/${locale}/info`} className="text-neutral-400 hover:text-white transition-colors">Info</Link>
              <span className="text-[10px] text-neutral-600 mt-4">{uiLabels.rights}</span>
            </div>
         </div>
 
       </div>
 
-      {/* Background Gradient */}
       <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-neutral-800/5 via-neutral-950/0 to-neutral-950/0 opacity-40" />
     </footer>
   );

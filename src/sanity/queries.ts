@@ -57,6 +57,11 @@ export const homePageQuery = defineQuery(`
       label,
       url
     }
+  },
+
+  "contactPage": *[_type == "contactPageSettings"][0] {
+    "title": title[$locale],
+    "desc": description[$locale]
   }
 }
 `);

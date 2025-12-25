@@ -1,7 +1,6 @@
-import { useTranslations } from 'next-intl';
+import { getTranslations, getLocale } from 'next-intl/server'; // 1. Use Server versions
 import SelectedWorksContent from './Content';
 
-// 1. The shape of data coming from Sanity
 interface SanityProject {
   title: string;
   category: string;
@@ -20,31 +19,36 @@ interface SelectedWorksProps {
   } | null;
 }
 
-export default function SelectedWorks({ data }: SelectedWorksProps) {
-  const t = useTranslations('SelectedWorks');
+// 2. Make function Async
+export default async function SelectedWorks({ data }: SelectedWorksProps) {
+  // 3. Fetch data on the server
+  const t = await getTranslations('SelectedWorks');
+  const locale = await getLocale();
 
   if (!data) return null;
 
-  // Map Sanity Data -> Component Props
   const formattedProjects = data.list.map((project) => ({
     id: project.slug,
     title: project.title,
     category: project.category,
     imageUrl: project.imageUrl,
-    // ✅ CHANGED: Links to root service page (e.g., /haakuvaus)
-    // instead of /work/haakuvaus, fitting your new site structure.
-    link: `/${project.slug}`,
+    // 4. Ensure links include the locale (e.g., /en/haakuvaus)
+    link: `/${locale}/palvelut/${project.slug}`,
   }));
 
-  // SAFETY CHECK: Use fallbacks if settings haven't been created in Sanity yet
   const sectionTitle = data.settings?.title || t('title');
 
   return (
     <SelectedWorksContent 
       title={sectionTitle}
-      // ❌ REMOVED: viewCaseLabel={t('viewCase')} 
-      // This was causing the error because the child component no longer needs it.
       projects={formattedProjects}
+      // 5. Pass the missing props
+      locale={locale}
+      labels={{
+        explore: t('explore'),
+        allServices: t('allServices'),
+        viewAllBtn: t('viewAllBtn'),
+      }}
     />
   );
 }

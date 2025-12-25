@@ -1,16 +1,15 @@
 import { createClient, type QueryParams } from "next-sanity";
-import { draftMode } from "next/headers"; // Required for switching between Live/Draft
-import { apiVersion, dataset, projectId } from "../env"; // Ensure these point to your env.ts
+import { draftMode } from "next/headers"; 
+import { apiVersion, dataset, projectId } from "../env"; 
 
 // 1. Standard Client Configuration
 export const client = createClient({
   projectId,
   dataset,
   apiVersion,
-  useCdn: true, // Set to true for production speed
+  useCdn: false, // 👈 CHANGE THIS TO FALSE (Forces fresh data)
 });
 
-// 2. The missing 'sanityFetch' helper
 export async function sanityFetch<
   T = unknown,
   const QueryString extends string = string
@@ -42,6 +41,7 @@ export async function sanityFetch<
 
   return client.fetch<T>(query, params, {
     perspective: "published",
-    next: { revalidate: 60, tags },
+    // 👇 CHANGE THIS TO 0 (Forces fresh fetch on every refresh)
+    next: { revalidate: 0, tags }, 
   });
 }

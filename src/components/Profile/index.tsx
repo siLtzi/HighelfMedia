@@ -1,38 +1,42 @@
 import { getTranslations, getLocale } from 'next-intl/server';
 import ProfileContent from './Content';
-import { urlForImage } from '@/sanity/lib/image'; // Assuming you have this helper
+import { urlForImage } from '@/sanity/lib/image'; // ✅ Reverted to correct import
 
 export default async function Profile({ data }: { data?: any }) {
   const t = await getTranslations('Profile');
-  const locale = await getLocale(); // Get current locale (e.g., 'en' or 'fi')
+  const locale = await getLocale(); 
 
-  // Helper to safely extract the localized string or fallback to English
+  // Helper to safely extract the localized string
   const localize = (field: any) => {
-    return field?.[locale] || field?.['en'] || '';
+    return field?.[locale] || field?.['en'] || field || '';
   };
 
-  // 1. Resolve Data: Try Sanity first, then fallback to translation files
-  const heading = localize(data?.heading) || t('heading');
-  const name = localize(data?.name) || t('name');
-  const bio = localize(data?.bio) || t('bio');
+  // 1. Resolve Data
+  // Note: We check data?.settings first (common Sanity pattern), or fall back to direct data
+  const heading = localize(data?.settings?.heading || data?.heading) || t('heading');
+  const name = localize(data?.settings?.name || data?.name) || t('defaultName');
+  const bio = localize(data?.settings?.bio || data?.bio) || t('defaultBio');
   
-  // 2. Resolve Image
-  const imageUrl = data?.image ? urlForImage(data.image).url() : undefined;
+  // 2. Resolve Image using the correct helper
+  const imageSource = data?.settings?.image || data?.image;
+  const imageUrl = imageSource 
+    ? urlForImage(imageSource).url() 
+    : undefined;
 
   // 3. Resolve Stats
   let stats = [];
   
-  if (data?.stats && Array.isArray(data.stats)) {
-    // Map Sanity stats to UI format
+  if (data?.stats && Array.isArray(data.stats) && data.stats.length > 0) {
+    // Use Sanity Data
     stats = data.stats.map((stat: any) => ({
       value: localize(stat.value),
       label: localize(stat.label)
     }));
   } else {
-    // Fallback to JSON translations
+    // Use JSON defaults
     stats = [
-      { label: t('stats.0.label'), value: t('stats.0.value') },
-      { label: t('stats.1.label'), value: t('stats.1.value') }
+      { label: t('stats.yearsLabel'), value: "10+" },
+      { label: t('stats.projectsLabel'), value: "150+" }
     ];
   }
 

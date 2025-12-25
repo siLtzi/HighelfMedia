@@ -17,14 +17,23 @@ interface Project {
   link: string;
 }
 
+// 1. UPDATE INTERFACE
 interface SelectedWorksContentProps {
   title: string;
   projects: Project[];
+  locale: string; // Needed for the link
+  labels: {       // New translations
+    explore: string;
+    allServices: string;
+    viewAllBtn: string;
+  };
 }
 
 export default function SelectedWorksContent({
   title,
   projects,
+  locale,
+  labels,
 }: SelectedWorksContentProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -38,19 +47,13 @@ export default function SelectedWorksContent({
       return track.scrollWidth - window.innerWidth + 100;
     };
 
-    // ANIMATION LOGIC:
-    // We want the horizontal scroll to finish EARLY.
-    // The container is 300vh tall.
-    // We set 'end' to 'center center'. 
-    // This means the horizontal scroll finishes when you are halfway through the section.
-    // The remaining half is purely for the next section to overlap comfortably.
     gsap.to(track, {
       x: () => -getScrollDistance(),
       ease: "none",
       scrollTrigger: {
         trigger: container,     
         start: "top top",       
-        end: "center center",   // ✅ CHANGED: Finishes early (at 50% scroll)
+        end: "center center",
         scrub: 1,               
         invalidateOnRefresh: true,
       },
@@ -59,15 +62,10 @@ export default function SelectedWorksContent({
   }, { scope: containerRef });
 
   return (
-    // TALL WRAPPER (300vh)
-    // This provides enough space for:
-    // 1. The Horizontal Scroll (First ~150vh)
-    // 2. The Static Hold while Profile slides over (Remaining ~150vh)
     <div 
       ref={containerRef} 
       className="relative z-0 h-[400vh] bg-neutral-900"
     >
-      {/* STICKY CONTENT */}
       <section
         className="sticky top-0 h-screen overflow-hidden flex flex-col justify-center"
       >
@@ -105,7 +103,8 @@ export default function SelectedWorksContent({
                 </h3>
                 <div className="opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-1000 ease-[cubic-bezier(0.25,1,0.5,1)] delay-100">
                   <span className="inline-flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-white border-b border-white/50 pb-1 group-hover:border-white transition-colors">
-                    Explore {project.category}
+                    {/* 2. USE DYNAMIC LABEL */}
+                    {labels.explore} {project.category}
                     <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="transform group-hover:translate-x-1 transition-transform">
                       <path d="M1 6H11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
                       <path d="M6 1L11 6L6 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -121,16 +120,17 @@ export default function SelectedWorksContent({
             </Link>
           ))}
 
+          {/* 3. LAST CARD: DYNAMIC LINK & TEXT */}
           <Link 
-            href="/palvelut" 
+            href={`/${locale}/palvelut`} 
             className="group relative h-full w-[85vw] md:w-[30vw] flex-shrink-0 bg-neutral-800 flex flex-col justify-center items-center border-l border-white/5 hover:bg-neutral-800/80 transition-colors duration-500"
           >
             <div className="text-center">
               <span className="block text-white/50 text-xs font-mono uppercase tracking-widest mb-4">
-                All Services
+                {labels.allServices}
               </span>
-              <span className="text-3xl md:text-4xl text-white font-bold uppercase tracking-tight group-hover:scale-110 transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] block">
-                View All <br /> Categories
+              <span className="text-3xl md:text-4xl text-white font-bold uppercase tracking-tight group-hover:scale-110 transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] block whitespace-pre-line">
+                {labels.viewAllBtn}
               </span>
               <div className="mt-8 flex justify-center opacity-50 group-hover:opacity-100 transition-opacity">
                  <div className="w-12 h-12 rounded-full border border-white/30 flex items-center justify-center group-hover:border-white transition-colors">

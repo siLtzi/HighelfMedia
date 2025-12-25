@@ -1,154 +1,19 @@
 {
-  "nav": {
-    "about": "Tietoa minusta",
-    "home": "Etusivu",
-    "services": "Palvelut",
-    "work": "Hinnasto"
-  },
-
-  "hero": {
-    "scroll": "Vieritä alas"
-  },
-
-  "services": {
-    "title": "Palvelut",
-    "subtitle": "Kuvaan ihmisille tärkeitä hetkiä, tarinoita ja tiloja – luonnollisesti ja laadukkaasti.",
-    "labels": {
-      "yrityskuvaus": "Yrityskuvaus",
-      "haakuvaus": "Hääkuvaus",
-      "muotokuvaus": "Muotokuvaus",
-      "lapsi-ja-perhekuvaus": "Lapsi- ja perhekuvaus",
-      "rippi-ja-valmistujaiskuvaus": "Rippi- ja valmistujaiskuvaus",
-      "asuntokuvaus": "Asuntokuvaus",
-      "hautajaiskuvaus": "Hautajaiskuvaus",
-      "elainkuvaus": "Eläinkuvaus"
-    }
-  },
-
-  "work": {
-    "title": "Hinnasto",
-    "subtitle": "Rakenna sinulle sopiva kuvauspaketti."
-  },
-
-  "footer": {
-    "instagram": "Highelf Media",
-    "copyright": "© {year} Highelf Media. Kaikki oikeudet pidätetään."
-  },
-
-  "cta": {
-    "contact": "Ota yhteyttä"
-  },
-
-  "contact": {
-    "title": "Ota yhteyttä",
-    "desc": "Kerro millaisesta kuvauksesta haaveilet – palaan sinulle mahdollisimman pian.",
-    "name": "Nimi",
-    "email": "Sähköposti",
-    "phone": "Puhelinnumero",
-    "message": "Viesti",
-    "submit": "Lähetä",
-    "helper": "Voit kertoa viestissäsi toivotun kuvauspaikan, ajankohdan sekä kuvauksen tyypin (esim. hääkuvaus, perhekuvaus, yrityskuvaus).",
-    "fromEstimator": "Valinnat hinnastolaskurista"
-  },
-
-  "estimator": {
-    "title": "Kuvauspaketin hinta",
-
-    "fields": {
-      "type": "Kuvaustyyppi",
-      "hours": "Kuvaustunnit",
-      "photos": "Valmiit kuvat (editoinnin jälkeen)"
-    },
-
-    "units": {
-      "hours": "h",
-      "photos": "kpl"
-    },
-
-    "helper": {
-      "baseLine": "Perushinta: {base} + {hourly}/h",
-      "perPhotoLine": "+ {rate}/kuva",
-      "summary": "Laskuri auttaa hahmottamaan suuruusluokan. Kirjoita valinnat yhteydenottolomakkeeseen, niin teen tarkan tarjouksen – matkakulut ja erityistilanteet sovitaan aina erikseen."
-    },
-
-    "total": {
-      "label": "Arvioitu hinta",
-      "approxNote": "Lopullinen hinta tarkentuu tarjouksessa – tämä on suuntaa-antava laskuri."
-    },
-
-    "breakdown": {
-      "baseLabel": "Peruspaketti",
-      "hoursLabel": "Kuvaus ({hours} h × {rate}/h)",
-      "photosLabel": "Valmiit kuvat ({count} kpl × {rate}/kpl)",
-      "extrasLabel": "Lisäpalvelut"
-    },
-
-    "cta": "Lisää valinnat yhteydenottolomakkeelle",
-
-    "extras": {
-      "haakuvaus": {
-        "second-photographer": {
-          "label": "Lisäkuvaaja",
-          "description": "Toinen kuvaaja tärkeimpiin hetkiin (esim. vihkiminen, potretit)"
-        },
-        "aerial": {
-          "label": "Ilmakuvat (drone)",
-          "description": "Ilmakuvaus juhlapaikasta ja ympäristöstä"
-        }
-      },
-      "asuntokuvaus": {
-        "aerial": {
-          "label": "Ilmakuvat (drone)",
-          "description": "Ilmakuvaus talosta ja pihapiiristä"
-        },
-        "floorplan": {
-          "label": "Pohjakuvat",
-          "description": "Selkeä pohjakuva ilmoitusta varten"
-        },
-        "twilight": {
-          "label": "Iltakuvat / twilight-kuvaus",
-          "description": "Tunnelmalliset kuvat auringonlaskun jälkeen"
-        }
-      }
-    },
-
-    "summary": {
-      "type": "Kuvaustyyppi: {type}",
-      "estimatedPrice": "Arvioitu hinta: {price}",
-      "extrasTitle": "Lisäpalvelut:",
-      "extraLine": "- {label} (+{price})"
-    }
-  },
-
-  "about": {
-    "title": "Tietoa minusta",
-    "body": "Olen [nimi], oululainen valokuvaaja. Rakastan luonnollista valoa, aitoja hetkiä ja kuvia, jotka kestävät aikaa. Kuvaan häitä, perheitä, muotokuvia ja yrityksiä — aina asiakkaan tarina edellä.",
-    "portraitAlt": "Valokuvaajan muotokuva"
-  },
-  
   "Navigation": {
     "work": "Valitut Työt",
     "services": "Palvelut",
-    "about": "Valokuvaaja",
-    "contact": "Yhteystiedot",
-    "letsTalk": "Ota Yhteyttä"
-  },
-  "Manifesto": {
-    "heading": "Visio",
-    "statement": "En vain tallenna todellisuutta. Minä rakennan sen. Jokainen ruutu on päätös. Jokainen varjo on tarina."
-  },
-  "SelectedWorks": {
-    "title": "Valitut Työt",
-    "viewCase": "Katso Projekti"
-  },
-  "Profile": {
-    "heading": "Tekijä",
-    "name": "Oma Nimesi",
-    "bio": "En vain ota kuvia; rakennan visuaalisia perintöjä. Taustani [Tausta] tuo jokaiseen kuvaukseen elokuvallista tarkkuutta. Studioni liikkuu, vision on ehdoton.",
-    "stats": [
-      { "label": "Vuotta Alalla", "value": "10+" },
-      { "label": "Projektia", "value": "150+" }
-    ]
+    "about": "Visio",
+    "letsTalk": "Ota Yhteyttä",
+    "serviceList": {
+      "business": "Yrityskuvaus",
+      "wedding": "Hääkuvaus",
+      "portrait": "Muotokuvaus",
+      "family": "Lapsi- ja perhekuvaus",
+      "graduation": "Rippi- ja valmistujaiskuvaus",
+      "realestate": "Asuntokuvaus",
+      "funeral": "Hautajaiskuvaus",
+      "pet": "Eläinkuvaus"
+    }
   },
   "Footer": {
     "locationLabel": "Sijainti",
@@ -156,8 +21,40 @@
     "socialsLabel": "Sosiaalinen media",
     "menuLabel": "Valikko",
     "ctaDefault": "Onko sinulla visio? Rakennetaan tarina yhdessä.",
-    "buttonDefault": "Aloita projekti",
-    "rights": "© {year} Highelf. Kaikki oikeudet pidätetään."
+    "buttonDefault": "Aloita Projekti",
+    "rights": "© {year} Highelf Media. Kaikki oikeudet pidätetään."
+  },
+  "contact": {
+    "title": "Ota Yhteyttä",
+    "desc": "Kerro millaisesta kuvauksesta haaveilet – palaan sinulle mahdollisimman pian.",
+    "name": "Nimi",
+    "email": "Sähköposti",
+    "message": "Viesti",
+    "submit": "Lähetä",
+    "helper": "Voit kertoa viestissäsi toivotun kuvauspaikan, ajankohdan sekä kuvauksen tyypin."
+  },
+  "SelectedWorks": {
+    "title": "Valitut Työt",
+    "viewCase": "Katso",
+    "allServices": "Kaikki Palvelut",
+    "viewAllBtn": "Selaa\nKategorioita",
+    "explore": "Tutustu"
+  },
+  "Profile": {
+    "heading": "Kuvaaja",
+    "defaultName": "Nimesi Tähän",
+    "defaultBio": "Kirjoita lyhyt esittely itsestäsi Sanity-hallintapaneelissa.",
+    "stats": {
+      "yearsLabel": "Vuotta alalla",
+      "projectsLabel": "Projektia"
+    }
+  },
+  "ServicePage": {
+    "pricingTitle": "Hinnasto & Paketit",
+    "selectPackage": "Valitse Paketti",
+    "faqTitle": "UKK",
+    "galleryTitle": "Galleria",
+    "loadMore": "Lataa Lisää",
+    "ctaTitle": "Oletko valmis kuvauksiin?"
   }
-
 }

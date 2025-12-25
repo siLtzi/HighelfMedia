@@ -4,11 +4,11 @@ import { draftMode } from 'next/headers';
 import '@/app/globals.css';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import { Metadata } from 'next';
 
 // 1. Load Local Fonts
-// We use "variable" to define the CSS var name for Tailwind
 const inter = localFont({
-  src: '../../fonts/Inter.woff2', // Relative path to src/fonts
+  src: '../../fonts/Inter.woff2',
   variable: '--font-inter',
   display: 'swap',
 });
@@ -19,7 +19,10 @@ const syne = localFont({
   display: 'swap',
 });
 
-// ... Metadata export ...
+export const metadata: Metadata = {
+  title: "Highelf Media",
+  description: "Cinematic Photography & Storytelling",
+};
 
 export default async function LocaleLayout({
   children,
@@ -32,11 +35,10 @@ export default async function LocaleLayout({
   const isDraft = (await draftMode()).isEnabled;
 
   return (
-    // 2. Inject Variables into HTML
     <html lang={locale} className={`${inter.variable} ${syne.variable}`}>
       <body className="bg-neutral-950 text-white antialiased">
 
-        {/* Navbar */}
+        {/* ✅ FIXED: You MUST pass the locale here for the Navbar to know the current language */}
         <Navbar locale={locale} />
         
         {/* Main Content */}
@@ -45,7 +47,7 @@ export default async function LocaleLayout({
         {/* Footer */}
         <Footer />
         
-        {/* Sanity Visual Editing (Only shows in Admin mode) */}
+        {/* Sanity Visual Editing */}
         {isDraft && (
           <div className="z-50">
             <VisualEditing />

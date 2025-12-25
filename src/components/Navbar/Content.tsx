@@ -9,6 +9,7 @@ import { useGSAP } from '@gsap/react';
 interface NavLink {
   label: string;
   href: string;
+  dropdown?: { label: string; href: string }[];
 }
 
 interface NavbarContentProps {
@@ -23,21 +24,23 @@ export default function NavbarContent({
   ctaLabel 
 }: NavbarContentProps) {
   const navRef = useRef<HTMLElement>(null);
-  const menuRef = useRef<HTMLDivElement>(null); // Ref for mobile menu overlay
+  const menuRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const router = useRouter();
   
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  // Switcher Logic
   const handleSwitchLocale = (newLocale: string) => {
-    if (newLocale === locale) return;
-    const newPath = pathname.replace(`/${locale}`, `/${newLocale}`);
-    router.push(newPath);
-    setIsMobileMenuOpen(false); // Close menu on switch
+    let path = pathname;
+    if (path.startsWith('/fi')) path = path.replace('/fi', '');
+    else if (path.startsWith('/en')) path = path.replace('/en', '');
+    if (!path || path === '') path = '/';
+    router.push(`/${newLocale}${path}`);
+    setIsMobileMenuOpen(false);
   };
 
-  // Scroll Listener
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
@@ -46,7 +49,6 @@ export default function NavbarContent({
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Lock Body Scroll when Menu is Open
   useEffect(() => {
     if (isMobileMenuOpen) {
       document.body.style.overflow = 'hidden';
@@ -55,7 +57,6 @@ export default function NavbarContent({
     }
   }, [isMobileMenuOpen]);
 
-  // Initial Nav Reveal Animation
   useGSAP(() => {
     gsap.from(navRef.current, {
       y: -100,
@@ -66,29 +67,23 @@ export default function NavbarContent({
     });
   }, { scope: navRef });
 
-  // Mobile Menu Animation Logic
   useGSAP(() => {
     if (isMobileMenuOpen) {
       const tl = gsap.timeline();
-      
-      // 1. Reveal Background
       tl.to(menuRef.current, {
         y: '0%',
         duration: 0.5,
         ease: 'power4.inOut',
         display: 'flex'
       })
-      // 2. Stagger Text Reveal
       .from('.mobile-nav-link', {
         y: 50,
         opacity: 0,
-        stagger: 0.1,
+        stagger: 0.05,
         duration: 0.4,
         ease: 'power2.out'
       }, "-=0.2");
-      
     } else {
-      // Close Animation
       gsap.to(menuRef.current, {
         y: '-100%',
         duration: 0.5,
@@ -116,22 +111,41 @@ export default function NavbarContent({
           />
         </Link>
 
-        {/* DESKTOP MENU (Hidden on Mobile) */}
+        {/* DESKTOP MENU */}
         <div className="hidden md:flex items-center gap-10 lg:gap-16 absolute left-1/2 transform -translate-x-1/2">
           {links.map((link) => (
-            <Link 
-              key={link.label} 
-              href={link.href}
-              className="relative text-sm font-medium tracking-[0.2em] uppercase text-neutral-400 hover:text-white transition-colors duration-300 group"
-            >
-              {link.label}
-              <span className="absolute -bottom-2 left-0 w-0 h-[1px] bg-white transition-all duration-300 group-hover:w-full" />
-            </Link>
+            <div key={link.label} className="relative group h-full">
+              <Link 
+                href={link.href}
+                className="relative text-sm font-medium tracking-[0.2em] uppercase text-neutral-400 hover:text-white transition-colors duration-300 py-6 block"
+              >
+                {link.label}
+                {/* Underline */}
+                <span className="absolute bottom-4 left-0 w-0 h-[1px] bg-white transition-all duration-300 group-hover:w-full" />
+              </Link>
+
+              {/* DROPDOWN MENU - REDESIGNED */}
+              {link.dropdown && (
+                <div className="absolute top-full left-1/2 -translate-x-1/2 pt-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 ease-out transform group-hover:translate-y-0 translate-y-2">
+                  <div className="bg-neutral-950/95 backdrop-blur-xl border border-white/10 py-2 shadow-[0_20px_40px_rgba(0,0,0,0.6)] flex flex-col min-w-[260px]">
+                    {link.dropdown.map((subLink) => (
+                      <Link 
+                        key={subLink.label}
+                        href={subLink.href}
+                        className="block px-8 py-3 text-[11px] font-mono uppercase tracking-[0.15em] text-neutral-400 hover:text-white hover:bg-white/5 transition-all duration-200 whitespace-nowrap text-left"
+                      >
+                        {subLink.label}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           ))}
         </div>
 
         <div className="flex items-center gap-6 md:gap-8 z-50">
-          {/* DESKTOP LOCALE SWITCHER */}
+          {/* LOCALE SWITCHER */}
           <div className="hidden md:flex items-center gap-3 text-xs font-mono uppercase tracking-widest text-neutral-500">
             <button 
               onClick={() => handleSwitchLocale('fi')}
@@ -149,7 +163,7 @@ export default function NavbarContent({
           </div>
 
           <Link 
-            href="#contact" 
+            href={`/${locale}/contact`} 
             className={`hidden md:block border border-white/30 text-xs font-bold uppercase tracking-widest text-white hover:bg-white hover:text-black transition-all duration-300 ${
               isScrolled ? 'px-5 py-2' : 'px-6 py-3'
             }`}
@@ -157,23 +171,17 @@ export default function NavbarContent({
             {ctaLabel}
           </Link>
           
-          {/* MOBILE HAMBURGER BUTTON */}
           <button 
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="md:hidden flex flex-col gap-[6px] p-2 group justify-center items-end z-50"
             aria-label="Toggle Menu"
           >
-             {/* Top Line: Rotates 45deg when open */}
              <span className={`h-[2px] bg-white transition-all duration-300 origin-center ${
                isMobileMenuOpen ? 'w-6 rotate-45 translate-y-[8px]' : 'w-8'
              }`} />
-             
-             {/* Middle Line: Fades out when open */}
              <span className={`h-[2px] bg-white transition-all duration-300 ${
                isMobileMenuOpen ? 'w-0 opacity-0' : 'w-6'
              }`} />
-
-             {/* Bottom Line: Rotates -45deg when open */}
              <span className={`h-[2px] bg-white transition-all duration-300 origin-center ${
                isMobileMenuOpen ? 'w-6 -rotate-45 -translate-y-[8px]' : 'w-4'
              }`} />
@@ -181,29 +189,45 @@ export default function NavbarContent({
         </div>
       </nav>
 
-      {/* --- MOBILE FULLSCREEN MENU OVERLAY --- */}
+      {/* MOBILE MENU */}
       <div 
         ref={menuRef}
-        className="fixed inset-0 z-40 bg-neutral-950 flex-col justify-center items-center gap-12 hidden"
+        className="fixed inset-0 z-40 bg-neutral-950 flex flex-col justify-start pt-32 items-center gap-8 hidden overflow-y-auto"
       >
-         {/* Mobile Links */}
-         <div className="flex flex-col items-center gap-8">
+         <div className="flex flex-col items-center gap-6 w-full px-8">
             {links.map((link) => (
-              <Link 
-                key={link.label}
-                href={link.href}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="mobile-nav-link text-3xl font-light uppercase tracking-widest text-white hover:text-neutral-400 transition-colors"
-              >
-                {link.label}
-              </Link>
+              <div key={link.label} className="flex flex-col items-center gap-4 w-full">
+                {/* Main Link */}
+                <Link 
+                  href={link.href}
+                  onClick={() => !link.dropdown && setIsMobileMenuOpen(false)}
+                  className="mobile-nav-link text-3xl font-light uppercase tracking-widest text-white hover:text-neutral-400 transition-colors"
+                >
+                  {link.label}
+                </Link>
+
+                {/* Mobile Dropdown Items */}
+                {link.dropdown && (
+                  <div className="flex flex-col items-center gap-4 mobile-nav-link mt-2">
+                     {link.dropdown.map(subLink => (
+                        <Link
+                          key={subLink.label}
+                          href={subLink.href}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className="text-xs font-mono uppercase tracking-[0.2em] text-neutral-500 hover:text-white transition-colors"
+                        >
+                          {subLink.label}
+                        </Link>
+                     ))}
+                  </div>
+                )}
+              </div>
             ))}
          </div>
 
-         <div className="w-12 h-[1px] bg-white/10 mobile-nav-link" />
+         <div className="w-12 h-[1px] bg-white/10 mobile-nav-link shrink-0 my-4" />
 
-         {/* Mobile Locale & CTA */}
-         <div className="flex flex-col items-center gap-8 mobile-nav-link">
+         <div className="flex flex-col items-center gap-8 mobile-nav-link pb-12">
              <div className="flex items-center gap-6 text-sm font-mono uppercase tracking-widest text-neutral-500">
                 <button 
                   onClick={() => handleSwitchLocale('fi')}
@@ -220,7 +244,7 @@ export default function NavbarContent({
              </div>
 
              <Link 
-                href="#contact"
+                href={`/${locale}/contact`}
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="border border-white/30 px-8 py-3 text-sm font-bold uppercase tracking-widest text-white"
              >

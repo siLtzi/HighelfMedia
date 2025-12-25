@@ -1,156 +1,60 @@
 {
-  "nav": {
-    "about": "About me",
-    "home": "Home",
-    "services": "Services",
-    "work": "Work"
-  },
-  "hero": {
-    "title": "We build fast websites that convert.",
-    "subtitle": "Modern Next.js + Tailwind stack, SEO-ready and measurable.",
-    "ctaPrimary": "Get a quote",
-    "ctaSecondary": "See work",
-    "scroll": "Scroll down"
-  },
-  "services": {
-    "title": "Services",
-    "subtitle": "I capture important moments, stories and spaces – naturally and with care.",
-
-    "labels": {
-      "yrityskuvaus": "Business photography",
-      "haakuvaus": "Wedding photography",
-      "muotokuvaus": "Portraits",
-      "lapsi-ja-perhekuvaus": "Children & family photography",
-      "rippi-ja-valmistujaiskuvaus": "Graduation & confirmation",
-      "asuntokuvaus": "Real estate photography",
-      "hautajaiskuvaus": "Funeral photography",
-      "elainkuvaus": "Pet photography"
-    }
-  },
-  "work": {
-    "title": "Pricing",
-    "subtitle": "Build a photo package that suits you."
-  },
-
-  "footer": {
-    "instagram": "Highelf Media",
-    "copyright": "© {year} Highelf Media. Kaikki oikeudet pidätetään."
-  },
-
-  "contact": {
-    "title": "Contact",
-    "desc": "Tell me what kind of photo shoot you have in mind – I’ll get back to you as soon as possible.",
-    "name": "Name",
-    "email": "Email",
-    "phone": "Phone number",
-    "message": "Message",
-    "submit": "Send",
-
-    "helper": "In your message, you can mention the preferred location, date and type of session (e.g. wedding, family, business).",
-    "fromEstimator": "Selections from price calculator"
-  },
-  "estimator": {
-    "title": "Package price estimate",
-
-    "fields": {
-      "type": "Shoot type",
-      "hours": "Shooting hours",
-      "photos": "Final edited photos"
-    },
-
-    "units": {
-      "hours": "h",
-      "photos": "pcs"
-    },
-
-    "helper": {
-      "baseLine": "Base price: {base} + {hourly}/h",
-      "perPhotoLine": "+ {rate}/photo",
-      "summary": "This calculator helps you understand the ballpark price. Add your selections to the contact form and I’ll send a detailed quote – travel costs and special situations are always agreed separately."
-    },
-
-    "total": {
-      "label": "Estimated price",
-      "approxNote": "Final price will be confirmed in the offer – this is an approximate calculator."
-    },
-
-    "breakdown": {
-      "baseLabel": "Base package",
-      "hoursLabel": "Shooting ({hours} h × {rate}/h)",
-      "photosLabel": "Final photos ({count} pcs × {rate}/pcs)",
-      "extrasLabel": "Extras"
-    },
-
-    "cta": "Add selections to contact form",
-
-    "extras": {
-      "haakuvaus": {
-        "second-photographer": {
-          "label": "Second photographer",
-          "description": "Second shooter for key moments (e.g. ceremony, portraits)"
-        }
-      },
-      "asuntokuvaus": {
-        "aerial": {
-          "label": "Aerial photos (drone)",
-          "description": "Aerial photos of the house and yard"
-        },
-        "floorplan": {
-          "label": "Floor plans",
-          "description": "Clear floor plan for the listing"
-        },
-        "twilight": {
-          "label": "Twilight photos",
-          "description": "Moody photos after sunset"
-        }
-      }
-    },
-
-    "summary": {
-      "type": "Shoot type: {type}",
-      "estimatedPrice": "Estimated price: {price}",
-      "extrasTitle": "Extras:",
-      "extraLine": "- {label} (+{price})"
-    }
-  },
-
-  "about": {
-    "title": "About me",
-    "body": "I’m [name], a photographer based in Oulu. I love natural light, genuine moments, and images that feel as good as they look. I work with weddings, families, portraits and businesses – the most important thing is that the final photos feel like you.",
-    "portraitAlt": "Portrait of photographer [name]"
-  },
-
   "Navigation": {
-    "work": "Selected Work",
+    "work": "Selected Works",
     "services": "Services",
-    "about": "The Photographer",
-    "contact": "Contact",
-    "letsTalk": "Let's Talk"
-  },
-  "Manifesto": {
-    "heading": "The Vision",
-    "statement": "I do not capture reality. I construct it. Every frame is a decision. Every shadow is a story."
-  },
-  "SelectedWorks": {
-    "title": "Selected Works",
-    "viewCase": "View Case"
-  },
-  "Profile": {
-    "heading": "The Architect",
-    "name": "Your Name",
-    "bio": "I don't just take photos; I build visual legacies. With a background in [Your Background], I bring a cinematic precision to every shoot. My studio is mobile, my vision is absolute.",
-    "stats": [
-      { "label": "Years Active", "value": "10+" },
-      { "label": "Projects", "value": "150+" }
-    ]
+    "about": "Vision",
+    "letsTalk": "Let's Talk",
+    "serviceList": {
+      "business": "Business Photography",
+      "wedding": "Wedding Photography",
+      "portrait": "Portraits",
+      "family": "Children & Family",
+      "graduation": "Graduation",
+      "realestate": "Real Estate",
+      "funeral": "Funeral Photography",
+      "pet": "Pet Photography"
+    }
   },
   "Footer": {
     "locationLabel": "Location",
     "timeLabel": "Local Time",
     "socialsLabel": "Socials",
     "menuLabel": "Menu",
-    "ctaDefault": "Have a vision? Let's build a story together.",
-    "buttonDefault": "Start a project",
-    "rights": "© {year} Highelf. All rights reserved."
+    "ctaDefault": "Do you have a vision? Let's build a legacy together.",
+    "buttonDefault": "Start Project",
+    "rights": "© {year} Highelf Media. All rights reserved."
+  },
+  "contact": {
+    "title": "Contact",
+    "desc": "Tell me about your vision – I'll get back to you as soon as possible.",
+    "name": "Name",
+    "email": "Email",
+    "message": "Message",
+    "submit": "Send Message",
+    "helper": "You can mention the desired location, date, and type of shoot."
+  },
+  "SelectedWorks": {
+    "title": "Selected Works",
+    "viewCase": "View",
+    "allServices": "All Services",
+    "viewAllBtn": "View All\nCategories",
+    "explore": "Explore"
+  },
+  "Profile": {
+    "heading": "The Photographer",
+    "defaultName": "Your Name",
+    "defaultBio": "Write a short bio about yourself in the Sanity CMS.",
+    "stats": {
+      "yearsLabel": "Years Exp.",
+      "projectsLabel": "Projects"
+    }
+  },
+  "ServicePage": {
+    "pricingTitle": "Pricing & Packages",
+    "selectPackage": "Select Package",
+    "faqTitle": "FAQ",
+    "galleryTitle": "Gallery",
+    "loadMore": "Load More",
+    "ctaTitle": "Ready to shoot?"
   }
 }
