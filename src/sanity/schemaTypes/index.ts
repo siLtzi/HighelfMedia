@@ -6,6 +6,7 @@ import { projectsSettings } from "./projectsSettings";
 import { profileSettings } from "./profileSettings";
 import { footerSettings } from "./footerSettings";
 import { contactPageSettings } from './contactPageSettings';
+import { navbarSettings } from './navbarSettings';
 import service from "./service"; 
 
 export const schemaTypes: SchemaTypeDefinition[] = [
@@ -15,5 +16,6 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   profileSettings,
   footerSettings,
   contactPageSettings,
+  navbarSettings,
   service,
 ];

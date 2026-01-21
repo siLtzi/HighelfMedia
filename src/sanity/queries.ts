@@ -32,11 +32,15 @@ export const homePageQuery = defineQuery(`
 
   "profiles": {
     "settings": *[_type == "profileSettings"][0] {
-      heading,
-      name,
-      bio,
-      image,
-      stats
+      "heading": heading[$locale],
+      "name": name[$locale],
+      "bio": bio[$locale],
+      "imageUrl": image.asset->url,
+      "imageAlt": image.alt,
+      "stats": stats[] {
+        "value": value[$locale],
+        "label": label[$locale]
+      }
     },
     "list": *[_type == "profile"] | order(_createdAt asc) {
       "name": name,
@@ -44,6 +48,17 @@ export const homePageQuery = defineQuery(`
       "bio": bio[$locale],
       "imageUrl": image.asset->url,
       "imageAlt": name
+    }
+  },
+
+  "navbar": *[_type == "navbarSettings"][0] {
+    "workLabel": workLabel[$locale],
+    "servicesLabel": servicesLabel[$locale],
+    "aboutLabel": aboutLabel[$locale],
+    "ctaLabel": ctaLabel[$locale],
+    "serviceLinks": serviceLinks[] {
+      "label": label[$locale],
+      slug
     }
   },
 

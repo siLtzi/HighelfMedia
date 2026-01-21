@@ -5,39 +5,62 @@ import FooterContent from './Content';
 
 // Query to fetch footer data directly
 const FOOTER_QUERY = defineQuery(`
-  *[_type == "footerSettings"][0] {
-    email,
-    phone,
-    "location": location[$locale],
-    "ctaText": ctaText[$locale],
-    "startProject": buttonText[$locale],
-    "socials": socials[] {
-      label,
-      url
+  {
+    "footer": *[_type == "footerSettings"][0] {
+      email,
+      phone,
+      "location": location[$locale],
+      "ctaText": ctaText[$locale],
+      "startProject": buttonText[$locale],
+      "socials": socials[] {
+        label,
+        url
+      }
+    },
+    "navbar": *[_type == "navbarSettings"][0] {
+      "workLabel": workLabel[$locale],
+      "servicesLabel": servicesLabel[$locale],
+      "aboutLabel": aboutLabel[$locale],
+      "serviceLinks": serviceLinks[] {
+        "label": label[$locale],
+        slug
+      }
     }
   }
 `);
 
-interface FooterData {
-  email?: string;
-  phone?: string;
-  location?: string;
-  ctaText?: string;
-  startProject?: string;
-  socials?: { label: string; url: string }[];
+interface FooterQueryResult {
+  footer?: {
+    email?: string;
+    phone?: string;
+    location?: string;
+    ctaText?: string;
+    startProject?: string;
+    socials?: { label: string; url: string }[];
+  };
+  navbar?: {
+    workLabel?: string;
+    servicesLabel?: string;
+    aboutLabel?: string;
+    serviceLinks?: { label: string; slug: string }[];
+  };
 }
 
 export default async function Footer() {
   const t = await getTranslations('Footer');
+  const navT = await getTranslations('Navigation');
   
   // 1. Get the current locale (e.g., 'fi' or 'en')
   const locale = await getLocale(); 
 
-  // 2. Fetch footer data directly from Sanity
-  const footerData = await sanityFetch<FooterData>({
+  // 2. Fetch footer and navbar data from Sanity
+  const data = await sanityFetch<FooterQueryResult>({
     query: FOOTER_QUERY,
     params: { locale },
   }) || {};
+
+  const footerData = data.footer || {};
+  const navbarData = data.navbar || {};
 
   const email = footerData.email || 'hello@highelf.fi';
   const phone = footerData.phone || '';
@@ -52,6 +75,13 @@ export default async function Footer() {
         { label: 'Instagram', url: 'https://instagram.com' },
         { label: 'LinkedIn', url: 'https://linkedin.com' }
       ];
+
+  // Navigation links for footer menu (same as navbar)
+  const menuLinks = [
+    { label: navbarData.workLabel || navT('work'), href: `/${locale}/#works` },
+    { label: navbarData.servicesLabel || navT('services'), href: `/${locale}/palvelut` },
+    { label: navbarData.aboutLabel || navT('about'), href: `/${locale}/#manifesto` },
+  ];
 
   // UI Labels
   const uiLabels = {
@@ -72,6 +102,7 @@ export default async function Footer() {
       ctaText={ctaText}
       startProjectLabel={startProjectLabel}
       uiLabels={uiLabels}
+      menuLinks={menuLinks}
     />
   );
 }

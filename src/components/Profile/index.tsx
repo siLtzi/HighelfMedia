@@ -1,36 +1,22 @@
-import { getTranslations, getLocale } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
 import ProfileContent from './Content';
-import { urlForImage } from '@/sanity/lib/image'; // ✅ Reverted to correct import
 
 export default async function Profile({ data }: { data?: any }) {
   const t = await getTranslations('Profile');
-  const locale = await getLocale(); 
 
-  // Helper to safely extract the localized string
-  const localize = (field: any) => {
-    return field?.[locale] || field?.['en'] || field || '';
-  };
+  // Data is now pre-localized from the query
+  const heading = data?.heading || t('heading');
+  const name = data?.name || t('defaultName');
+  const bio = data?.bio || t('defaultBio');
+  const imageUrl = data?.imageUrl || undefined;
 
-  // 1. Resolve Data
-  // Note: We check data?.settings first (common Sanity pattern), or fall back to direct data
-  const heading = localize(data?.settings?.heading || data?.heading) || t('heading');
-  const name = localize(data?.settings?.name || data?.name) || t('defaultName');
-  const bio = localize(data?.settings?.bio || data?.bio) || t('defaultBio');
-  
-  // 2. Resolve Image using the correct helper
-  const imageSource = data?.settings?.image || data?.image;
-  const imageUrl = imageSource 
-    ? urlForImage(imageSource).url() 
-    : undefined;
-
-  // 3. Resolve Stats
+  // Stats are now pre-localized from the query
   let stats = [];
   
   if (data?.stats && Array.isArray(data.stats) && data.stats.length > 0) {
-    // Use Sanity Data
     stats = data.stats.map((stat: any) => ({
-      value: localize(stat.value),
-      label: localize(stat.label)
+      value: stat.value || '',
+      label: stat.label || ''
     }));
   } else {
     // Use JSON defaults

@@ -13,8 +13,13 @@ interface SocialLink {
   url: string;
 }
 
+interface MenuLink {
+  label: string;
+  href: string;
+}
+
 interface FooterContentProps {
-  locale: string; // 1. ADD THIS
+  locale: string;
   email: string;
   phone: string;
   location: string;
@@ -28,17 +33,19 @@ interface FooterContentProps {
     menu: string;
     rights: string;
   };
+  menuLinks: MenuLink[];
 }
 
 export default function FooterContent({ 
-  locale, // 2. RECEIVE IT HERE
+  locale,
   email, 
   phone, 
   location, 
   socials, 
   ctaText,
   startProjectLabel,
-  uiLabels
+  uiLabels,
+  menuLinks
 }: FooterContentProps) {
   const container = useRef<HTMLElement>(null);
   const [time, setTime] = useState('');
@@ -194,12 +201,15 @@ export default function FooterContent({
         <div className="footer-reveal flex flex-col gap-2 md:items-end">
            <span className="text-xs font-mono uppercase text-neutral-500 tracking-widest mb-1">{uiLabels.menu}</span>
            <div className="flex flex-col gap-1 md:items-end">
-             {/* NOTE: Ideally these should also use `/${locale}/haakuvaus` if they are pages.
-                If they are sections on the home page (like #work), keep them as is.
-             */}
-             <Link href={`/${locale}/haakuvaus`} className="text-neutral-400 hover:text-white transition-colors">Hääkuvaus</Link>
-             <Link href={`/${locale}/muotokuvat`} className="text-neutral-400 hover:text-white transition-colors">Muotokuvat</Link>
-             <Link href={`/${locale}/info`} className="text-neutral-400 hover:text-white transition-colors">Info</Link>
+             {menuLinks.map((link, i) => (
+               <Link 
+                 key={i}
+                 href={link.href} 
+                 className="text-neutral-400 hover:text-white transition-colors"
+               >
+                 {link.label}
+               </Link>
+             ))}
              <span className="text-[10px] text-neutral-600 mt-4">{uiLabels.rights}</span>
            </div>
         </div>
