@@ -1,14 +1,43 @@
 import { getTranslations, getLocale } from 'next-intl/server';
+import { sanityFetch } from '@/sanity/lib/client';
+import { defineQuery } from 'next-sanity';
 import FooterContent from './Content';
 
-export default async function Footer({ data }: { data?: any }) {
+// Query to fetch footer data directly
+const FOOTER_QUERY = defineQuery(`
+  *[_type == "footerSettings"][0] {
+    email,
+    phone,
+    "location": location[$locale],
+    "ctaText": ctaText[$locale],
+    "startProject": buttonText[$locale],
+    "socials": socials[] {
+      label,
+      url
+    }
+  }
+`);
+
+interface FooterData {
+  email?: string;
+  phone?: string;
+  location?: string;
+  ctaText?: string;
+  startProject?: string;
+  socials?: { label: string; url: string }[];
+}
+
+export default async function Footer() {
   const t = await getTranslations('Footer');
   
   // 1. Get the current locale (e.g., 'fi' or 'en')
   const locale = await getLocale(); 
 
-  // 2. Resolve Data from Sanity (or fallback)
-  const footerData = data || {}; 
+  // 2. Fetch footer data directly from Sanity
+  const footerData = await sanityFetch<FooterData>({
+    query: FOOTER_QUERY,
+    params: { locale },
+  }) || {};
 
   const email = footerData.email || 'hello@highelf.fi';
   const phone = footerData.phone || '';
@@ -17,10 +46,12 @@ export default async function Footer({ data }: { data?: any }) {
   const startProjectLabel = footerData.startProject || t('buttonDefault');
 
   // Socials
-  const socials = footerData.socials?.length > 0 ? footerData.socials : [
-    { label: 'Instagram', url: 'https://instagram.com' },
-    { label: 'LinkedIn', url: 'https://linkedin.com' }
-  ];
+  const socials = (footerData.socials && footerData.socials.length > 0) 
+    ? footerData.socials 
+    : [
+        { label: 'Instagram', url: 'https://instagram.com' },
+        { label: 'LinkedIn', url: 'https://linkedin.com' }
+      ];
 
   // UI Labels
   const uiLabels = {
@@ -33,7 +64,6 @@ export default async function Footer({ data }: { data?: any }) {
 
   return (
     <FooterContent 
-      // ✅ ADDED: Pass the locale down to the client component
       locale={locale} 
       email={email}
       phone={phone}
